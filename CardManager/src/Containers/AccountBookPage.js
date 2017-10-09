@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -12,14 +6,34 @@ import {
   View
 } from 'react-native';
 
-import App from './src/App';
+import {
+    DrawerNavigator
+ } from 'react-navigation';
 
-export default class CardManager extends Component {
+ import TabBarItem from '../Component/TabBarItem'
+
+export default class AccountBookPage extends Component {
+
+    static navigationOptions = {
+        title: '账本',
+        tabBarLabel: '账本',
+        tabBarIcon: ({ focused, tintColor }) => (
+            <TabBarItem
+                tintColor={tintColor}
+                focused={focused}
+                normalImage={require('../images/main/book_tab_unselect.png')}
+                selectedImage={require('../images/main/book_tab_select.png')}
+            />
+        ),
+
+
+    }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Welcome to AccountBookPage!
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
@@ -51,5 +65,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-AppRegistry.registerComponent('CardManager', () => App);
