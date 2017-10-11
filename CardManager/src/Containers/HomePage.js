@@ -3,6 +3,7 @@ import {
     AppRegistry,
     StyleSheet,
     Text,
+    Image,
     StatusBar,
     View
 } from 'react-native';
@@ -16,6 +17,20 @@ export default class HomePage extends Component {
 
     static navigationOptions = {
         title: '首页',
+        headerLeft:(
+            <Image source={require('../images/main/scane_icon.png')}/>
+        ),
+        headerRight:(
+            <Image source={require('../images/main/message_right_icon.png')}/>
+        ),
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTitleStyle: {
+            color: 'red',
+            fontSize: 20
+          },
+          headerTintColor: 'red',
         tabBarLabel: '首页',
         tabBarIcon: ({ focused, tintColor }) => (
             <TabBarItem
@@ -24,10 +39,10 @@ export default class HomePage extends Component {
                 normalImage={require('../images/main/home_tab_unselect.png')}
                 selectedImage={require('../images/main/home_tab_select.png')}
             />
-        ),
+        )
 
 
-    }
+    };
 
     render() {
         return (
@@ -54,6 +69,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
+        marginTop:-66,
     },
     welcome: {
         fontSize: 20,

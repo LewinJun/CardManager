@@ -24,6 +24,9 @@ export default class MePage extends Component {
                 selectedImage={require('../images/main/me_tab_select.png')}
             />
         ),
+        headerStyle: {
+          backgroundColor: 'transparent',
+        },
     }
   render() {
     return (
