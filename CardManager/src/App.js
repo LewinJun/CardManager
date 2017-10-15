@@ -59,7 +59,8 @@ const TabContainer = TabNavigator(
   const App = StackNavigator(
     {
         Home: {
-            screen: TabContainer
+            screen: TabContainer,
+            
           },
     //   Login: { screen: UserLoginPage },
     //   ExDetail:{screen: ExhibitionDetail},

@@ -18,6 +18,10 @@ export default class BannerImages extends Component {
   // 初始化模拟数据
   constructor(props) {
     super(props);
+    this.state = {
+      height: 200,
+   
+  }
   }
   static propTypes = {
     //参数，图片路径集合
@@ -27,6 +31,8 @@ export default class BannerImages extends Component {
   renderImg(){
         var imageViews=[];
         for(var i=0;i<this.props.images.length;i++){
+          var imgUrl = this.props.images[i]+'';
+          
             imageViews.push(
                <TouchableWithoutFeedback onPress = {() => this.props.itemClick(this.key+'a')}
                key={i} ref="swiper">
@@ -34,16 +40,23 @@ export default class BannerImages extends Component {
                       key={i}
                       resizeMode='cover'
                       style={{flex:1}}
-                      source={{uri:this.props.images[i]}}
+                      source={{uri:imgUrl}}
                       />
               </TouchableWithoutFeedback>
             );
         }
         return imageViews;
     }
+    initParam(){
+      if(this.props.height !== undefined){
+        this.setState({height:this.props.height});
+      }
+    }
   render() {
     return (
-      <Swiper height={185}
+      <View style={{height:this.state.height,}}>
+        {this.initParam()}
+      <Swiper height={this.state.height}
 
             loop={true}
             autoplayDirection={true}
@@ -55,6 +68,7 @@ export default class BannerImages extends Component {
             >
          {this.renderImg()}
      </Swiper>
+     </View>
     );
   }
 }
