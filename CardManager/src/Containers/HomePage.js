@@ -6,6 +6,8 @@ import {
     Image,
     Alert,
     StatusBar,
+    Animated,
+    ScrollView,
     View
 } from 'react-native';
 import {
@@ -13,11 +15,20 @@ import {
 } from 'react-navigation';
 
 import TabBarItem from '../Component/TabBarItem'
+import Button from '../Component/Button'
 import BannerImages from '../Component/BannerImages'
 import NavBar from '../Component/NavBar'
+import ViewLine from '../Component/ViewLine'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
+var deviceHeight = Dimensions.get('window').height;
+var heightFlex = deviceHeight/667;
+var bannerHeight = 238;
+var menuHeight = 90;
+var menuMarginBottom = 20;
+
+
 
 var IMGS = [
     'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1508051186391&di=41f6f14edd72d8e1e115be4c6f87924f&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fcdbf6c81800a19d8aaae3d7639fa828ba61e4617.jpg',
@@ -48,15 +59,21 @@ export default class HomePage extends Component {
 
     };
 
+
+
     constructor(props) {
         super(props);
         this.state = {
-        
             swiperShow:false,
-            
         };
+        
+        if(deviceWidth < 375){
+            bannerHeight = bannerHeight * heightFlex - 10;
+            menuHeight = menuHeight*heightFlex - 10;
+            menuMarginBottom = menuMarginBottom*heightFlex - 4;
+        }
     }
-    componentDidMount(){
+    componentWillMount(){
         setTimeout(()=>{
             this.setState({swiperShow:true});
         },0);
@@ -68,21 +85,23 @@ export default class HomePage extends Component {
                 <BannerImages images={IMGS} itemClick={(key) => Alert.alert(
                     'Alert Title',
                     key,
-                )} />
+                )} height={bannerHeight}/>
             );
         }else {
             return <View style={{height:185}}></View>;
         }
     }
 
+    //首页中间功能菜单
     getMenuCenter(){
         var itemDataSource=[
-            {icon:require('../images/activity/activity_menu_my.png'),title:'我的活动'},
-            {icon:require('../images/activity/activity_menu_line.png'),title:'线下'},
-            {icon:require('../images/activity/activity_menu_sign.png'),title:'签到赢奖'},
-            {icon:require('../images/activity/activity_menu_other.png'),title:'其他'}
+            {icon:require('../images/main/home_item_baoxian.png'),title:'保险'},
+            {icon:require('../images/main/home_item_daikuan.png'),title:'贷款'},
+            {icon:require('../images/main/home_item_card.png'),title:'银行卡'},
+            {icon:require('../images/main/home_item_mobile.png'),title:'手机充值'}
           ];
-          var menuItemW = menuWidth/itemDataSource.length;
+          var menuItemW = deviceWidth/itemDataSource.length;
+          
           var itemViews = [];
           for(var i = 0; i < itemDataSource.length; i++){  
             var titleStr = itemDataSource[i].title;
@@ -90,12 +109,54 @@ export default class HomePage extends Component {
             var keyStr = 'menuItem'+i;
             itemViews.push(<Button key={keyStr} keyId={keyStr} onPress={(str)=>Alert.alert(
               'Alert Title',
-              str,
-          )} title={titleStr} iconSource={icon} iconStyle={{width:40,height:40,marginBottom:6}} textStyle={{color:'#333435',fontSize:14,}}  buttonStyle={{height:menuHeight,width:menuItemW}}/>);  
+              str+bannerHeight,
+          )} title={titleStr} iconSource={icon} iconStyle={{width:40,height:40,marginBottom:menuMarginBottom}} textStyle={{color:'#333435',fontSize:14,}}  buttonStyle={{height:menuHeight,width:menuItemW}}/>);  
           }  
-        return(
-            <View style={{height:80,flex:1}}>
-                
+
+        return (<View style={{flexDirection:'row',height:menuHeight+25,alignItems:'center'}}>
+            {itemViews}
+        </View>);
+    }
+
+    onAnimationEnd(e) {
+        var offSetX = e.nativeEvent.contentOffset.x;
+        
+    }
+
+    getCardView(){
+        return (
+            <View style={{width:299,height:189,marginRight:20,justifyContent:'center',alignItems:'center'}}>
+                <Image source={require('../images/main/card_demo.png')} resizeMode='contain' style={{width:299,height:189,position:'absolute'}}/>
+                {/* <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'transparent',width:299}}>
+                    <Text style={{justifyContent:'center',backgroundColor:'transparent',fontSize:22}}>1242 3423 2342 3423</Text>
+                </View> */}
+            </View>
+        );
+    }
+
+    getCardCenter(){
+        var titleView=(<View style={{flexDirection:'row',marginLeft:10,alignItems:'center',height:50}}>
+            <Text style={{color:'black',backgroundColor:'transparent'}}>信用卡中心</Text>
+        </View>);
+
+        return (
+            <View style={{height:250,flex:1}}>
+                {titleView}
+                <ScrollView horizontal={true} //水平滑动
+                                    ref="scrollView"
+                                    pagingEnabled={false}
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{width: deviceWidth, height: 200,marginTop:0}}//设置大小
+                                    onScroll={Animated.event(
+                                        [{nativeEvent: {contentOffset: {x: 620}}}]//把contentOffset.x绑定给this.state.xOffset
+                                    )}
+                                    scrollEventThrottle={100}
+                                    onMomentumScrollEnd={this.onAnimationEnd.bind(this)}>
+                                    <View style={{width:30}}/>
+                                    
+                                    {this.getCardView()}
+                                    {this.getCardView()}
+                        </ScrollView>
             </View>
         );
     }
@@ -105,17 +166,15 @@ export default class HomePage extends Component {
             <View style={styles.container}>
                 
                 <StatusBar barStyle={'light-content'} backgroundColor={'#009DF0'} />
+                {/* bannerVView*/}
                 {this.renderSwiper()}
-                <Text style={styles.welcome}>
-                    Welcome to HomePage!
-                </Text>
-                <Text style={styles.instructions}>
-                    To get started, edit index.ios.js
-                </Text>
-                <Text style={styles.instructions}>
-                    Press Cmd+R to reload,{'\n'}
-                    Cmd+D or shake for dev menu
-                </Text>
+                {/* 功能菜单View*/}
+                {this.getMenuCenter()}
+                <ViewLine />
+                {/* 功信用卡中心View*/}
+                {this.getCardCenter()}
+                
+                {/* navBarView,放最底部，显示在最上面*/}
                 <NavBar title="首页" leftButtonImage={require('../images/main/scane_icon.png')} rightButtonImage={require('../images/main/message_right_icon.png')}></NavBar>
             </View>
         );
@@ -127,7 +186,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#0ad1ff',
+        backgroundColor: 'white',
     },
     welcome: {
         fontSize: 20,

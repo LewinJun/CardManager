@@ -18,15 +18,17 @@ export default class BannerImages extends Component {
   // 初始化模拟数据
   constructor(props) {
     super(props);
-    this.state = {
-      height: 200,
-   
-  }
+    
   }
   static propTypes = {
     //参数，图片路径集合
     images : PropTypes.array,
     itemClick : PropTypes.func,
+  }
+  componentWillMount(){
+    if(this.props.height === undefined){
+      this.props.height = 238;
+    }
   }
   renderImg(){
         var imageViews=[];
@@ -47,16 +49,13 @@ export default class BannerImages extends Component {
         }
         return imageViews;
     }
-    initParam(){
-      if(this.props.height !== undefined){
-        this.setState({height:this.props.height});
-      }
-    }
+    
   render() {
     return (
-      <View style={{height:this.state.height,}}>
-        {this.initParam()}
-      <Swiper height={this.state.height}
+      
+      <View style={{height:this.props.height,}}>
+       
+      <Swiper height={this.props.height}
 
             loop={true}
             autoplayDirection={true}

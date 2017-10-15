@@ -17,6 +17,7 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 import AccountBookPage from './Containers/AccountBookPage'
 import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
+import HuanKuan from './Containers/HuanKuanPage'
 import ColorUtil from './Util/ColorUtil'
 
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
@@ -33,6 +34,7 @@ const TransitionConfiguration = () => ({
 const TabContainer = TabNavigator(
     {
       Main: { screen: HomePage},
+      HuanKuan:{screen:HuanKuan},
       Book: { screen: AccountBookPage },
       Me: { screen: MePage }
     },
