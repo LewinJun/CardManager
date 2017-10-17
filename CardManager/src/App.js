@@ -17,6 +17,7 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 import AccountBookPage from './Containers/AccountBookPage'
 import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
+import LoginPage from './Module/User/LoginPage'
 import HuanKuan from './Containers/HuanKuanPage'
 import ColorUtil from './Util/ColorUtil'
 
@@ -64,9 +65,9 @@ const TabContainer = TabNavigator(
             screen: TabContainer,
             
           },
-    //   Login: { screen: UserLoginPage },
-    //   ExDetail:{screen: ExhibitionDetail},
-    //   Register: { screen: UserRegisterPage }
+      Login: { screen: LoginPage },
+      // ExDetail:{screen: ExhibitionDetail},
+      // Register: { screen: RegisterPage }
     },
     {
       headerMode: 'screen',

@@ -66,7 +66,7 @@ export default class HomePage extends Component {
         this.state = {
             swiperShow:false,
         };
-        
+
         if(deviceWidth < 375){
             bannerHeight = bannerHeight * heightFlex - 10;
             menuHeight = menuHeight*heightFlex - 10;
@@ -107,10 +107,7 @@ export default class HomePage extends Component {
             var titleStr = itemDataSource[i].title;
             var icon = itemDataSource[i].icon;
             var keyStr = 'menuItem'+i;
-            itemViews.push(<Button key={keyStr} keyId={keyStr} onPress={(str)=>Alert.alert(
-              'Alert Title',
-              str+bannerHeight,
-          )} title={titleStr} iconSource={icon} iconStyle={{width:40,height:40,marginBottom:menuMarginBottom}} textStyle={{color:'#333435',fontSize:14,}}  buttonStyle={{height:menuHeight,width:menuItemW}}/>);  
+            itemViews.push(<Button key={keyStr} keyId={keyStr} onPress={(str)=>this.props.navigation.navigate('Login',{ transition: 'forVertical' })} title={titleStr} iconSource={icon} iconStyle={{width:40,height:40,marginBottom:menuMarginBottom}} textStyle={{color:'#333435',fontSize:14,}}  buttonStyle={{height:menuHeight,width:menuItemW}}/>);  
           }  
 
         return (<View style={{flexDirection:'row',height:menuHeight+25,alignItems:'center'}}>
