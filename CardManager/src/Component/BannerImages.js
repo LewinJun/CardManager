@@ -53,7 +53,7 @@ export default class BannerImages extends Component {
   render() {
     return (
       
-      <View style={{height:this.props.height,}}>
+      <View style={{height:this.props.height}}>
        
       <Swiper height={this.props.height}
 

@@ -29,7 +29,7 @@ var contentTop = 160;
 var bgHeight = 220;
 
 
-export default class UserLoginPage extends Component {
+export default class LoginPage extends Component {
 
     static navigationOptions = {
         header: false
@@ -68,7 +68,7 @@ export default class UserLoginPage extends Component {
             imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
             contentViewStyle={[styles.loginButton]} onPress={()=>this.props.navigation.navigate('Register')}/>
 
-            <Button title='没有账号？点击注册' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} buttonStyle={{position: 'absolute',bottom:-35,right:50,height:34}} onPress={() => console.log("")}/>
+            <Button title='没有账号？点击注册' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} buttonStyle={{position: 'absolute',bottom:-35,right:50,height:34}} onPress={() => this.props.navigation.navigate('Register')}/>
 
         </View>);
     }
@@ -90,7 +90,7 @@ export default class UserLoginPage extends Component {
                     </View>
 
                     <View style={{flexDirection:'row',position: 'absolute',bottom:80,width:deviceWidth,height:50,alignItems:'center',justifyContent:'center'}}>
-                    <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} onPress={() => console.log("")}/>
+                    <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} onPress={() => this.props.navigation.navigate('Register')}/>
                     </View>
 
                     <Button title='' source={require('../../images/btn_close.png')}

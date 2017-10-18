@@ -15,10 +15,12 @@ import {
 } from 'react-navigation';
 
 import TabBarItem from '../Component/TabBarItem'
+import BannerView from '../Component/BannerView'
 import Button from '../Component/Button'
 import BannerImages from '../Component/BannerImages'
 import NavBar from '../Component/NavBar'
 import ViewLine from '../Component/ViewLine'
+import ColorUtil from '../Util/ColorUtil'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
@@ -27,6 +29,15 @@ var heightFlex = deviceHeight/667;
 var bannerHeight = 238;
 var menuHeight = 90;
 var menuMarginBottom = 20;
+
+var Platform = require('Platform');  
+var viewMarginTop = 0;
+// if (Platform.OS === 'android') {  
+//     //todo 
+//     viewMarginTop = -66; 
+// }else{  
+//     //todo  
+// }  
 
 
 
@@ -45,7 +56,8 @@ export default class HomePage extends Component {
 
     static navigationOptions = {
         title: '首页',
-        header:false,
+        header:(<NavBar title="首页" leftButtonImage={require('../images/main/scane_icon.png')} rightButtonImage={require('../images/main/message_right_icon.png')}></NavBar>
+    ),
         tabBarLabel: '首页',
         tabBarIcon: ({ focused, tintColor }) => (
             <TabBarItem
@@ -73,23 +85,30 @@ export default class HomePage extends Component {
             menuMarginBottom = menuMarginBottom*heightFlex - 4;
         }
     }
-    componentWillMount(){
+    componentDidMount(){
         setTimeout(()=>{
             this.setState({swiperShow:true});
         },0);
     }
 
     renderSwiper(){
-        if(this.state.swiperShow){
+        // if(this.state.swiperShow){
             return (
-                <BannerImages images={IMGS} itemClick={(key) => Alert.alert(
+                <BannerView images={IMGS} itemClick={(key) => Alert.alert(
                     'Alert Title',
                     key,
-                )} height={bannerHeight}/>
+                )} style={{height:bannerHeight}}/>
             );
-        }else {
-            return <View style={{height:185}}></View>;
-        }
+        // }else {
+        //     return <View style={{height:bannerHeight,width:deviceWidth}}>
+        //     <Image
+        //               key={"aaa"}
+        //               resizeMode='cover'
+        //               style={{flex:1}}
+        //               source={{uri:IMGS[0]}}
+        //               />
+        //     </View>;
+        // }
     }
 
     //首页中间功能菜单
@@ -162,7 +181,7 @@ export default class HomePage extends Component {
         return (
             <View style={styles.container}>
                 
-                <StatusBar barStyle={'light-content'} backgroundColor={'#009DF0'} />
+                <StatusBar barStyle={'light-content'} backgroundColor={ColorUtil.styleColor} />
                 {/* bannerVView*/}
                 {this.renderSwiper()}
                 {/* 功能菜单View*/}
@@ -172,7 +191,6 @@ export default class HomePage extends Component {
                 {this.getCardCenter()}
                 
                 {/* navBarView,放最底部，显示在最上面*/}
-                <NavBar title="首页" leftButtonImage={require('../images/main/scane_icon.png')} rightButtonImage={require('../images/main/message_right_icon.png')}></NavBar>
             </View>
         );
     }
@@ -184,6 +202,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
+        marginTop:viewMarginTop,
     },
     welcome: {
         fontSize: 20,

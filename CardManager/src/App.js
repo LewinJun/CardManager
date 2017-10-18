@@ -18,6 +18,7 @@ import AccountBookPage from './Containers/AccountBookPage'
 import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
 import LoginPage from './Module/User/LoginPage'
+import RegisterPage from './Module/User/RegisterPage'
 import HuanKuan from './Containers/HuanKuanPage'
 import ColorUtil from './Util/ColorUtil'
 
@@ -63,11 +64,13 @@ const TabContainer = TabNavigator(
     {
         Home: {
             screen: TabContainer,
-            
+            navigationOptions: {
+              headerLeft: null
+            }
           },
       Login: { screen: LoginPage },
       // ExDetail:{screen: ExhibitionDetail},
-      // Register: { screen: RegisterPage }
+      Register: { screen: RegisterPage }
     },
     {
       headerMode: 'screen',
