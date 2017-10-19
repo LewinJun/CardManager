@@ -66,7 +66,7 @@ export default class AccountBookPage extends Component {
         '全部', '纯消费', '还款消费', '快速消费', '普通消费','充值','提现'
       ]),
       menuViewHeight: new Animated.Value(0),
-      menuItemSelectIndex:0,
+      menuItemSelectIndex:1,
     };
     _this = this;
   }
@@ -113,13 +113,14 @@ export default class AccountBookPage extends Component {
 
   _renderMenuRow(text, sectionID: number, rowID: number) {
     var contentW = menuViewWidth - 30;
+    var textStyle = (rowID === _this.state.menuItemSelectIndex) ? {color: 'red'} : {color: 'white'}  
     return (
       <TouchableHighlight activeOpacity={0.6}
         underlayColor={'transparent'} onPress={() => _this.menuItemClick(rowID)} key={rowID}>
         <View style={{ width: menuViewWidth, height: 50, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ width: contentW, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: contentW, justifyContent: 'center', height: 48 }}>
-              <Text style={{ color: 'white', fontSize: 16 }}>{text}</Text>
+              <Text style={[{ color: 'white', fontSize: 16 },textStyle]}>{text}</Text>
             </View>
             <View style={{ backgroundColor: '#72e9c2', width: contentW, height: 1 }} />
           </View>
