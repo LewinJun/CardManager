@@ -29,9 +29,9 @@ export default class Button extends Component {
     //
     textView() {
         var buttonText = [];
-        if(this.props.iconSource !== null){
+        if(this.props.iconSource !== null && this.props.iconSource !== undefined){
             buttonText.push(<Image source={this.props.iconSource} resizeMode="contain" style={this.props.iconStyle} key="myButtonImageIcon"/>);
-        }if (this.props.title != null && this.props.title.length > 0) {
+        }if (this.props.title !== null && this.props.title !== undefined && this.props.title.length > 0) {
             buttonText.push(<Text style={[this.props.textStyle,{backgroundColor:'transparent'}]} key="myButtonTitle">{this.props.title}</Text>);
         } else {
             buttonText.push(<View key="myButtonNullText"/>);
@@ -75,7 +75,7 @@ export default class Button extends Component {
 
     render() {
         return (
-            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.8}
+            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6}
                                 underlayColor={'transparent'} onPress={()=>this.pressHandler()} key={this.props.keyId}>
                 <View style={[this.props.contentViewStyle, {flex:1,alignItems: 'center',
                     justifyContent: 'center'}]}>

@@ -18,16 +18,17 @@ import {
 import Button from '../../Component/Button'
 import NavBar from '../../Component/NavBar'
 import ColorUtil from './../../Util/ColorUtil'
+import ViewLine from '../../Component/ViewLine'
 
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
 var deviceHeight = Dimensions.get('window').height;
 var contentWidth = 346* (deviceWidth/375);
-var contentHeight = 265;
+var contentHeight = 355;
 // * (deviceHeight/667)
-var contentTop = 160;
-var bgHeight = 220;
+var contentTop = 180;
+var bgHeight = 250;
 
 
 export default class RegisterPage extends Component {
@@ -70,12 +71,26 @@ export default class RegisterPage extends Component {
             </View>
             <View style={styles.inputLine}>
             </View>
-            
-            <Button title='登录' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
+            <View style={styles.inputLine}/>
+            <View style={styles.inputContent}>
+                <Image source={require('../../images/user/loginReg/code_icon.png')}
+                       style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
+                <TextInput style={[styles.input, {width: 134}]} placeholder="请输入验证码"
+                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({code: text})}/>
+                <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => console.log("")}/>
+            </View>
+            <View style={styles.inputLine}/>
+            <View style={styles.inputContent}>
+                <Image source={require('../../images/user/loginReg/yaoqingma_icon.png')}
+                       style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
+                <TextInput style={styles.input} placeholder="请输入邀请码"
+                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({password: text})}/>
+            </View>
+            <View style={styles.inputLine}/>
+            <Button title='注册' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
             imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
             contentViewStyle={[styles.loginButton]} onPress={()=>this.props.navigation.navigate('Register')}/>
 
-            <Button title='没有账号？点击注册' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} buttonStyle={{position: 'absolute',bottom:-35,right:50,height:34}} onPress={() => console.log("")}/>
 
         </View>);
     }
@@ -87,17 +102,13 @@ export default class RegisterPage extends Component {
                     <Image source={require('../../images/user/loginReg/login_bg.png')} style={styles.loginBackground} resizeMode='stretch'/>
                     <View style={styles.contentView}>
                         
-                        <Image source={require('../../images/user/loginReg/login_content_bg.png')} 
+                        <Image source={require('../../images/user/loginReg/login_content_big_bg.png')} 
                         resizeMode='stretch'
                         style={{position: 'absolute',width:contentWidth,height:contentHeight}}>
                         </Image>
 
                         {this.inputPasswordView()}
 
-                    </View>
-
-                    <View style={{flexDirection:'row',position: 'absolute',bottom:80,width:deviceWidth,height:50,alignItems:'center',justifyContent:'center'}}>
-                    <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13}} onPress={() => console.log("")}/>
                     </View>
                 </View>
             </TouchableWithoutFeedback>);
@@ -109,6 +120,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         marginTop:-66,
+        backgroundColor:'white'
     },
     contentView: {
         // justifyContent: 'center',

@@ -16,6 +16,7 @@ import {
 } from 'react-navigation';
 
 import Button from '../../Component/Button'
+import NavBar from '../../Component/NavBar'
 import ColorUtil from './../../Util/ColorUtil'
 import ViewLine from '../../Component/ViewLine'
 
@@ -23,24 +24,30 @@ import ViewLine from '../../Component/ViewLine'
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
 var deviceHeight = Dimensions.get('window').height;
-var contentWidth = 346 * (deviceWidth / 375);
-var contentHeight = 265;
+var contentWidth = 346* (deviceWidth/375);
+var contentHeight = 305;
 // * (deviceHeight/667)
 var contentTop = 180;
 var bgHeight = 250;
 
 
-export default class LoginPage extends Component {
+export default class ForgetPassWordPage extends Component {
 
     static navigationOptions = {
-        header: false
+        title: '忘记密码',
+        headerStyle: {
+            backgroundColor: 'transparent',
+            borderBottomWidth:0,
+            elevation:0,//android 边框阴影 
+            shadowOpacity:0,
+          },          
     };
 
     //手机号码icon View
     mobileIconView() {
         return (
             <Image source={require('../../images/user/loginReg/username_icon.png')}
-                style={styles.inputIcon} />
+                   style={styles.inputIcon}/>
         );
     }
 
@@ -64,12 +71,20 @@ export default class LoginPage extends Component {
             </View>
             <View style={styles.inputLine}>
             </View>
+            <View style={styles.inputLine}/>
+            <View style={styles.inputContent}>
+                <Image source={require('../../images/user/loginReg/code_icon.png')}
+                       style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
+                <TextInput style={[styles.input, {width: 134}]} placeholder="请输入验证码"
+                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({code: text})}/>
+                <Button title='获取验证码' buttonStyle={{borderWidth:1,borderColor:ColorUtil.styleColor,height:30,width:90,borderRadius: 2,}} textStyle={{color: ColorUtil.styleColor, fontSize: 13}} onPress={() => console.log("")}/>
+            </View>
+            
+            <View style={styles.inputLine}/>
+            <Button title='确认' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
+            imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
+            contentViewStyle={[styles.loginButton]} onPress={()=>this.props.navigation.navigate('Register')}/>
 
-            <Button title='登录' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
-                imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
-                contentViewStyle={[styles.loginButton]} onPress={() => this.props.navigation.navigate('Register')} />
-
-            <Button title='没有账号？点击注册' textStyle={{ color: ColorUtil.styleColor, fontSize: 13 }} buttonStyle={{ position: 'absolute', bottom: -35, right: 50, height: 34 }} onPress={() => this.props.navigation.navigate('Register')} />
 
         </View>);
     }
@@ -78,28 +93,17 @@ export default class LoginPage extends Component {
         return (//Keyboard.dismiss
             <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
                 <View style={styles.view}>
-                    <Image source={require('../../images/user/loginReg/login_bg.png')} style={styles.loginBackground} resizeMode='stretch' />
+                    <Image source={require('../../images/user/loginReg/login_bg.png')} style={styles.loginBackground} resizeMode='stretch'/>
                     <View style={styles.contentView}>
-
-                        <Image source={require('../../images/user/loginReg/login_content_bg.png')}
-                            resizeMode='stretch'
-                            style={{ position: 'absolute', width: contentWidth, height: contentHeight }}>
+                        
+                        <Image source={require('../../images/user/loginReg/login_content_big_bg.png')} 
+                        resizeMode='stretch'
+                        style={{position: 'absolute',width:contentWidth,height:contentHeight}}>
                         </Image>
 
                         {this.inputPasswordView()}
 
                     </View>
-
-                    <View style={{ flexDirection: 'row', marginTop: 2, width: deviceWidth, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                        <Button title='忘记密码 ?' textStyle={{ color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline' }} onPress={() => this.props.navigation.navigate('ForgetPassWord')} />
-                        <ViewLine lineStyle={{ width: 1, height: 20, marginLeft: 10, marginRight: 10 }} />
-                        <Button title='没有账号？点击注册' textStyle={{ color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline' }} buttonStyle={{ height: 34 }} onPress={() => this.props.navigation.navigate('Register')} />
-
-                    </View>
-
-                    <Button title='' source={require('../../images/btn_close.png')}
-                        imageStyle={styles.closeBtn} buttonStyle={{ position: 'absolute', top: 35, left: 20, }}
-                        contentViewStyle={styles.closeBtn} onPress={() => this.props.navigation.goBack()} />
                 </View>
             </TouchableWithoutFeedback>);
     }
@@ -109,6 +113,7 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         alignItems: 'center',
+        marginTop:-66,
         backgroundColor:'white'
     },
     contentView: {
@@ -142,7 +147,6 @@ const styles = StyleSheet.create({
         height: 20,
         alignItems: 'flex-start',
         marginLeft: 18,
-        marginTop: 18,
     },
     inputLine: {
         backgroundColor: '#E9E9E9',
@@ -151,10 +155,11 @@ const styles = StyleSheet.create({
         // marginLeft:40,
         alignItems: 'center',
     },
-
+    
     inputContent: {
         flexDirection: 'row',
-        marginLeft: 40,
+        marginLeft:40,
+        alignItems:'center',
         width: contentWidth,
     },
     loginBackground: {
@@ -163,8 +168,8 @@ const styles = StyleSheet.create({
         height: bgHeight,
     },
     loginButton: {
-        marginTop: 10,
-        width: contentWidth - 20,
+        marginTop:10,
+        width: contentWidth-20,
         height: 70,
     }
 })

@@ -29,6 +29,7 @@ var heightFlex = deviceHeight/667;
 var bannerHeight = 238;
 var menuHeight = 90;
 var menuMarginBottom = 15;
+var cardHeight = 250;
 
 var Platform = require('Platform');  
 var viewMarginTop = 0;
@@ -84,6 +85,10 @@ export default class HomePage extends Component {
             menuHeight = menuHeight*heightFlex - 10;
             menuMarginBottom = menuMarginBottom*heightFlex - 4;
         }
+        if(deviceHeight < 667){
+            cardHeight = cardHeight * heightFlex;
+        }
+
     }
     componentDidMount(){
         setTimeout(()=>{
@@ -151,8 +156,9 @@ export default class HomePage extends Component {
     }
 
     getCardCenter(){
-        var titleView=(<View style={{flexDirection:'row',marginLeft:10,alignItems:'center',height:50}}>
-            <Text style={{color:'black',backgroundColor:'transparent'}}>信用卡中心</Text>
+        var titleView=(<View style={{flexDirection:'row',marginLeft:10,alignItems:'center',height:50,width:deviceWidth,alignItems:'center'}}>
+            <Text style={{color:'black',backgroundColor:'transparent',fontSize:16}}>信用卡中心</Text>
+            <Button title='申请' textStyle={{ color: ColorUtil.styleColor, fontSize: 16}} buttonStyle={{ height: 34,width:90,position:'absolute',right:0 }} onPress={() => console.log('')} />
         </View>);
 
         return (
@@ -162,6 +168,7 @@ export default class HomePage extends Component {
                                     ref="scrollView"
                                     pagingEnabled={false}
                                     showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
                                     style={{width: deviceWidth, height: 200,marginTop:0}}//设置大小
                                     onScroll={Animated.event(
                                         [{nativeEvent: {contentOffset: {x: 620}}}]//把contentOffset.x绑定给this.state.xOffset
@@ -176,12 +183,22 @@ export default class HomePage extends Component {
             </View>
         );
     }
-
+/**
+ onScroll={Animated.event([{nativeEvent: {contentOffset: {y: 1200}}}]//把contentOffset.x绑定给this.state.xOffset)}
+ */
     render() {
         return (
             <View style={styles.container}>
                 
                 <StatusBar barStyle={'light-content'} backgroundColor={ColorUtil.styleColor} />
+                
+                <ScrollView horizontal={false} //水平滑动
+                                    ref="scrollView"
+                                    pagingEnabled={false}
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{width: deviceWidth, height: deviceHeight,marginTop:0}}//设置大小
+                                    scrollEventThrottle={100}
+                                    >
                 {/* bannerVView*/}
                 {this.renderSwiper()}
                 {/* 功能菜单View*/}
@@ -189,6 +206,7 @@ export default class HomePage extends Component {
                 <ViewLine />
                 {/* 功信用卡中心View*/}
                 {this.getCardCenter()}
+                </ScrollView>
                 
                 {/* navBarView,放最底部，显示在最上面*/}
             </View>

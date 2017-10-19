@@ -19,6 +19,7 @@ import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
 import LoginPage from './Module/User/LoginPage'
 import RegisterPage from './Module/User/RegisterPage'
+import ForgetPassWordPage from './Module/User/ForgetPassWordPage'
 import HuanKuan from './Containers/HuanKuanPage'
 import ColorUtil from './Util/ColorUtil'
 
@@ -69,7 +70,7 @@ const TabContainer = TabNavigator(
             }
           },
       Login: { screen: LoginPage },
-      // ExDetail:{screen: ExhibitionDetail},
+      ForgetPassWord:{screen: ForgetPassWordPage},
       Register: { screen: RegisterPage }
     },
     {
