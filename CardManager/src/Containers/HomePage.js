@@ -28,7 +28,7 @@ var deviceHeight = Dimensions.get('window').height;
 var heightFlex = deviceHeight/667;
 var bannerHeight = 238;
 var menuHeight = 90;
-var menuMarginBottom = 20;
+var menuMarginBottom = 15;
 
 var Platform = require('Platform');  
 var viewMarginTop = 0;

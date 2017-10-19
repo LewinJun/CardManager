@@ -37,6 +37,7 @@ export default class RegisterPage extends Component {
         headerStyle: {
             backgroundColor: 'transparent',
             borderBottomWidth:0,
+            elevation:0,//android 边框阴影 
             shadowOpacity:0,
           },          
     };
