@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.cardmanager.CircularProgressView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="8dp"
+        app:borderWidth="5dp" />
+    <!--<com.cardmanager.CircularProgressView-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_margin="8dp"-->
+        <!--app:angleAnimationDurationMillis="@integer/circular_default_angleAnimationDurationMillis"-->
+        <!--app:borderWidth="@dimen/circular_default_border_width"-->
+        <!--app:colorSequence="@array/circular_default_color_sequence"-->
+        <!--app:sweepAnimationDurationMillis="@integer/circular_default_sweepAnimationDuration" />-->
+
+</LinearLayout>

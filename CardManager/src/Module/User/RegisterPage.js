@@ -32,8 +32,13 @@ var contentHeight = 355;
 var contentTop = 180;
 var bgHeight = 250;
 
+var codeTime = 60;//秒
+var codeTitle = "获取验证码";
+
 
 export default class RegisterPage extends Component {
+
+     _this = undefined;
 
     static navigationOptions = {
         title: '注册',
@@ -44,6 +49,15 @@ export default class RegisterPage extends Component {
             shadowOpacity:0,
           },          
     };
+    constructor(props) {
+        super(props);
+        this.state = {
+            codeTitle:codeTitle,
+            codeTime:codeTime,
+            codeTitleColor:ColorUtil.styleColor,
+        };
+        _this = this;
+    }
 
     //手机号码icon View
     mobileIconView() {
@@ -77,9 +91,9 @@ export default class RegisterPage extends Component {
             <View style={styles.inputContent}>
                 <Image source={require('../../images/user/loginReg/code_icon.png')}
                        style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
-                <TextInput style={[styles.input, {width: 134}]} placeholder="请输入验证码"
+                <TextInput style={[styles.input, {width:150}]} placeholder="请输入验证码"
                            placeholderTextColor="#adadad" onChangeText={(text) => this.setState({mobileCode: text})}/>
-                <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => this.getMobileCode()}/>
+                <Button title={this.state.codeTitle} buttonStyle={{width:90}} textStyle={{color: this.state.codeTitleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => this.getMobileCode()}/>
             </View>
             <View style={styles.inputLine}/>
             <View style={styles.inputContent}>
@@ -92,7 +106,6 @@ export default class RegisterPage extends Component {
             <Button title='注册' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
             imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
             contentViewStyle={[styles.loginButton]} onPress={()=>this.registerClick()}/>
-
 
         </View>);
     }
@@ -117,19 +130,57 @@ export default class RegisterPage extends Component {
     }
 
     registerClick(){
-        ToastUtil.showShort("aaa");
+        if(this.state.mobile === undefined || this.state.mobile.length < 0){
+            ToastUtil.showError("请输入手机号");
+            return;
+        }
+        if(this.state.password === undefined || this.state.password.length < 6){
+            ToastUtil.showError("请输入密码至少6位");
+            return;
+        }
+        if(this.state.mobileCode === undefined || this.state.mobileCode.length < 1){
+            ToastUtil.showError("请输入验证码");
+            return;
+        }
+        var params = {"user_phone":this.state.mobile,"verification_code":this.state.mobileCode,"user_password":this.state.password};
+        // if(this.state.code !== undefined && this.state.code.length > 1){
+            params["register_code"] = this.state.code;
+        // }
+        ToastUtil.showLoading();
+        UserData.register(params,(res)=>{
+            // ToastUtil.dimiss();
+            ToastUtil.showShort(res.message);
+        },undefined);
+        
     }
 
     getMobileCode(){
-        if(this.state.mobile && this.state.mobile.length > 0 && !this.state.isGetCoding){
+        if(this.state.mobile && this.state.mobile.length > 0 && !this.state.isGetCoding && this.state.codeTitle === codeTitle){
             this.setState({isGetCoding:true});
             UserData.getMobileCode(this.state.mobile,(res)=>{
                 this.setState({isGetCoding:false});
                 ToastUtil.showShort(res.message);
+                this._runCodeTime();
             },(error)=>{
                 this.setState({isGetCoding:false});
             });
         }
+    }
+    _runCodeTime(){
+        
+        this._timer = setInterval(function () {
+            this.setState({codeTime:this.state.codeTime-1});
+            this.setState({codeTitle:this.state.codeTime+"s后重发",codeTitleColor:ColorUtil.grayColor});
+            
+            if(this.state.codeTime == 1){
+                _this._stopCodeTime();
+                this.setState({codeTitle:codeTitle,codeTitleColor:ColorUtil.styleColor});
+            }
+        }.bind(this), 1000);
+    }
+
+    _stopCodeTime(){
+        clearInterval(this._timer);
     }
 }
 
