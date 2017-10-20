@@ -69,8 +69,6 @@ export default class LoginPage extends Component {
                 imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
                 contentViewStyle={[styles.loginButton]} onPress={() => this.props.navigation.navigate('Register')} />
 
-            <Button title='没有账号？点击注册' textStyle={{ color: ColorUtil.styleColor, fontSize: 13 }} buttonStyle={{ position: 'absolute', bottom: -35, right: 50, height: 34 }} onPress={() => this.props.navigation.navigate('Register')} />
-
         </View>);
     }
 

@@ -16,9 +16,11 @@ import {
 } from 'react-navigation';
 
 import Button from '../../Component/Button'
+import UserData from '../../Data/Interface/UserData'
 import NavBar from '../../Component/NavBar'
 import ColorUtil from './../../Util/ColorUtil'
 import ViewLine from '../../Component/ViewLine'
+import ToastUtil from '../../Component/ToastUtil'
 
 
 var Dimensions = require('Dimensions');
@@ -59,7 +61,7 @@ export default class RegisterPage extends Component {
                 <TextInput style={styles.input} placeholder="请输入账号" keyboardType='phone-pad' underlineColorAndroid='transparent'
                     placeholderTextColor="#adadad" ref={(input) => {
                         this.passMobile = input;
-                    }} onChangeText={(text) => this.setState({ passMobile: text })} />
+                    }} onChangeText={(text) => this.setState({ mobile: text })} />
             </View>
             <View style={styles.inputLine}>
             </View>
@@ -76,20 +78,20 @@ export default class RegisterPage extends Component {
                 <Image source={require('../../images/user/loginReg/code_icon.png')}
                        style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
                 <TextInput style={[styles.input, {width: 134}]} placeholder="请输入验证码"
-                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({code: text})}/>
-                <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => console.log("")}/>
+                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({mobileCode: text})}/>
+                <Button title='获取验证码' textStyle={{color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => this.getMobileCode()}/>
             </View>
             <View style={styles.inputLine}/>
             <View style={styles.inputContent}>
                 <Image source={require('../../images/user/loginReg/yaoqingma_icon.png')}
                        style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
                 <TextInput style={styles.input} placeholder="请输入邀请码"
-                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({password: text})}/>
+                           placeholderTextColor="#adadad" onChangeText={(text) => this.setState({code: text})}/>
             </View>
             <View style={styles.inputLine}/>
             <Button title='注册' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
             imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
-            contentViewStyle={[styles.loginButton]} onPress={()=>this.props.navigation.navigate('Register')}/>
+            contentViewStyle={[styles.loginButton]} onPress={()=>this.registerClick()}/>
 
 
         </View>);
@@ -113,7 +115,24 @@ export default class RegisterPage extends Component {
                 </View>
             </TouchableWithoutFeedback>);
     }
+
+    registerClick(){
+        ToastUtil.showShort("aaa");
+    }
+
+    getMobileCode(){
+        if(this.state.mobile && this.state.mobile.length > 0 && !this.state.isGetCoding){
+            this.setState({isGetCoding:true});
+            UserData.getMobileCode(this.state.mobile,(res)=>{
+                this.setState({isGetCoding:false});
+                ToastUtil.showShort(res.message);
+            },(error)=>{
+                this.setState({isGetCoding:false});
+            });
+        }
+    }
 }
+
 
 const styles = StyleSheet.create({
     view: {

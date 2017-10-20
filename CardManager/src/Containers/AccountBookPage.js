@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ListView,
   Animated,
+  RefreshControl,
   TouchableHighlight,
   Image,
   Text,
@@ -26,7 +27,15 @@ var currentMenuHeight = 0;
 
 import TabBarItem from '../Component/TabBarItem'
 import Button from '../Component/Button'
+import Footer from '../Component/Footer'
 import ColorUtil from '../Util/ColorUtil'
+
+const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+
+var dataSourceArrayInit = [
+  '展会列表1---展会活动', '展会列表---展会活动', '北京展会', '上海展会', '广州展会', '深圳展会', '哈哈哈', '你话好多疯狂减肥还是的空间划分空间上的空间发挥科技'
+];
+var dataSourceArray = dataSourceArrayInit.concat();
 
 export default class AccountBookPage extends Component {
 
@@ -57,16 +66,18 @@ export default class AccountBookPage extends Component {
   // 初始化模拟数据
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    var menuViewDataArray = [
+      { text: '全部', isSelect: true }, { text: '纯消费', isSelect: false }, { text: '还款消费', isSelect: false }, { text: '快速消费', isSelect: false }, { text: '普通消费', isSelect: false }, { text: '充值', isSelect: false }, { text: '提现', isSelect: false }
+    ];
+
     this.state = {
-      dataSource: ds.cloneWithRows([
-        '展会列表1---展会活动', '展会列表---展会活动', '北京展会', '上海展会', '广州展会', '深圳展会', '哈哈哈', '你话好多疯狂减肥还是的空间划分空间上的空间发挥科技'
-      ]),
-      menuDataSource: ds.cloneWithRows([
-        '全部', '纯消费', '还款消费', '快速消费', '普通消费','充值','提现'
-      ]),
+      dataSource: ds.cloneWithRows(dataSourceArray),
+      menuDataSource: ds.cloneWithRows(menuViewDataArray),
+      menuDataSourceList: menuViewDataArray,
       menuViewHeight: new Animated.Value(0),
-      menuItemSelectIndex:1,
+      menuItemSelectIndex: "0",
+      isRefreshing: false,
+      isLoadMore: false,
     };
     _this = this;
   }
@@ -108,19 +119,29 @@ export default class AccountBookPage extends Component {
   }
 
   menuItemClick(rowID) {
+    var array = this.state.menuDataSourceList;
+    for (var i = 0; i < array.length; i++) {
+      array[i].isSelect = false;
+      if (rowID === i + '') {
+        array[i].isSelect = true;
+      }
+    }
     console.log('rowID:' + rowID);
+    //刷新menuView ListView
+    this.setState({ menuDataSource: ds.cloneWithRows(array), menuDataSourceList: array });
+    this.rightBtnClick();
   }
 
   _renderMenuRow(text, sectionID: number, rowID: number) {
     var contentW = menuViewWidth - 30;
-    var textStyle = (rowID === _this.state.menuItemSelectIndex) ? {color: 'red'} : {color: 'white'}  
+    var textStyle = text.isSelect ? { color: 'red' } : { color: 'white' }
     return (
       <TouchableHighlight activeOpacity={0.6}
         underlayColor={'transparent'} onPress={() => _this.menuItemClick(rowID)} key={rowID}>
         <View style={{ width: menuViewWidth, height: 50, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ width: contentW, justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ width: contentW, justifyContent: 'center', height: 48 }}>
-              <Text style={[{ color: 'white', fontSize: 16 },textStyle]}>{text}</Text>
+              <Text style={[{ color: 'white', fontSize: 16 }, textStyle]}>{text.text}</Text>
             </View>
             <View style={{ backgroundColor: '#72e9c2', width: contentW, height: 1 }} />
           </View>
@@ -152,6 +173,40 @@ export default class AccountBookPage extends Component {
           dataSource={this.state.dataSource}
           removeClippedSubviews={false}
           renderRow={this._renderRow}
+          onEndReached={() => {
+            this.setState({ isLoadMore: true });
+            setTimeout(() => {
+              this.setState({ isLoadMore: false });
+              dataSourceArray.push('aaa');
+              dataSourceArray.push('aaa');
+              dataSourceArray.push('aaa');
+              dataSourceArray.push('aaa');
+              dataSourceArray.push('aaa');
+              this.setState({ dataSource: ds.cloneWithRows(dataSourceArray) });
+              {/* Alert.alert(
+                                'Alert Title',
+                                'cccc',
+                            ) */}
+            }, 3000);
+          }}
+          onEndReachedThreshold={10}
+          renderFooter={() => {
+            return this.state.isLoadMore ? <Footer /> : <View />;
+          }}
+          refreshControl={
+            <RefreshControl
+              style={{backgroundColor: 'transparent'}}
+              refreshing={this.state.isRefreshing}
+              onRefresh={() => {
+                 this.setState({ isRefreshing:true});
+                setTimeout(() => {
+                  this.setState({ dataSource: ds.cloneWithRows(dataSourceArrayInit) ,isRefreshing:false});
+                }, 3000);
+              }}
+              title="Loading..."
+              colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
+            />
+          }
         />
         {this.getMenuView()}
       </View>
