@@ -56,4 +56,7 @@ fastlane/screenshots
 # Others
 .vscode/
 typings/
+ios/Pods/
+Pods/
+ios/Podfile.lock
 
