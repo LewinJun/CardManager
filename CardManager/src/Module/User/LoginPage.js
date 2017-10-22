@@ -7,6 +7,7 @@ import {
     TextInput,
     StyleSheet,
     Keyboard,
+    DeviceEventEmitter,
     Animated,
     ScrollView,
     Alert,
@@ -15,9 +16,12 @@ import {
     DrawerNavigator
 } from 'react-navigation';
 
+import UserData from '../../Data/Interface/UserData'
 import Button from '../../Component/Button'
 import ColorUtil from './../../Util/ColorUtil'
+import Util from './../../Util/Util'
 import ViewLine from '../../Component/ViewLine'
+import ToastUtil from '../../Component/ToastUtil'
 
 
 var Dimensions = require('Dimensions');
@@ -36,6 +40,18 @@ export default class LoginPage extends Component {
         header: false
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            loginBtnDisabled:false,
+        }
+        UserData.getLoginAccount((value)=>{
+            if(value){
+                this.setState({mobile:value});
+            }
+        });
+    }
+
     //手机号码icon View
     mobileIconView() {
         return (
@@ -52,14 +68,14 @@ export default class LoginPage extends Component {
                 <TextInput style={styles.input} placeholder="请输入账号" keyboardType='phone-pad' underlineColorAndroid='transparent'
                     placeholderTextColor="#adadad" ref={(input) => {
                         this.passMobile = input;
-                    }} onChangeText={(text) => this.setState({ passMobile: text })} />
+                    }} onChangeText={(text) => this.setState({ mobile: text })} />
             </View>
             <View style={styles.inputLine}>
             </View>
             <View style={styles.inputContent}>
                 <Image source={require('../../images/user/loginReg/password_icon.png')}
                     style={[styles.inputIcon]} resizeMode="stretch" />
-                <TextInput style={styles.input} placeholder="请输入密码" password={true} underlineColorAndroid='transparent'
+                <TextInput style={styles.input} placeholder="请输入密码" secureTextEntry={true} password={true} underlineColorAndroid='transparent'
                     placeholderTextColor="#adadad" onChangeText={(text) => this.setState({ password: text })} />
             </View>
             <View style={styles.inputLine}>
@@ -67,9 +83,23 @@ export default class LoginPage extends Component {
 
             <Button title='登录' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
                 imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
-                contentViewStyle={[styles.loginButton]} onPress={() => this.props.navigation.navigate('Register')} />
+                contentViewStyle={[styles.loginButton]} onPress={() => this.loginClick()} disabled = {this.state.loginBtnDisabled}/>
 
         </View>);
+    }
+
+    loginClick() {
+        
+            this.setState({loginBtnDisabled:true});
+            UserData.login(this.state.mobile,this.state.password,(res) => {
+                
+                this.setState({loginBtnDisabled:false});
+                DeviceEventEmitter.emit("loginSuccess");
+                this.props.navigation.goBack();
+            }, (error) => {
+                this.setState({loginBtnDisabled:false});                
+            });
+        
     }
 
     render() {
@@ -89,9 +119,9 @@ export default class LoginPage extends Component {
                     </View>
 
                     <View style={{ flexDirection: 'row', marginTop: 2, width: deviceWidth, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                        <Button title='忘记密码 ?' textStyle={{ color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline' }} onPress={() => this.props.navigation.navigate('ForgetPassWord')} />
+                        <Button title='忘记密码 ?' textStyle={{ color: ColorUtil.styleColor, fontSize: 13, textDecorationLine: 'underline' }} onPress={() => this.props.navigation.navigate('ForgetPassWord')} />
                         <ViewLine lineStyle={{ width: 1, height: 20, marginLeft: 10, marginRight: 10 }} />
-                        <Button title='没有账号？点击注册' textStyle={{ color: ColorUtil.styleColor, fontSize: 13,textDecorationLine:'underline' }} buttonStyle={{ height: 34 }} onPress={() => this.props.navigation.navigate('Register')} />
+                        <Button title='没有账号？点击注册' textStyle={{ color: ColorUtil.styleColor, fontSize: 13, textDecorationLine: 'underline' }} buttonStyle={{ height: 34 }} onPress={() => this.props.navigation.navigate('Register')} />
 
                     </View>
 
@@ -107,7 +137,7 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
     contentView: {
         // justifyContent: 'center',

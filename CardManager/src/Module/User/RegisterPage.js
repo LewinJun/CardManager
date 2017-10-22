@@ -55,6 +55,8 @@ export default class RegisterPage extends Component {
             codeTitle:codeTitle,
             codeTime:codeTime,
             codeTitleColor:ColorUtil.styleColor,
+            codeBtnDisable:false,
+            registerBtnDisable:false,
         };
         _this = this;
     }
@@ -82,7 +84,7 @@ export default class RegisterPage extends Component {
             <View style={styles.inputContent}>
                 <Image source={require('../../images/user/loginReg/password_icon.png')}
                     style={[styles.inputIcon]} resizeMode="stretch" />
-                <TextInput style={styles.input} placeholder="请输入密码" password={true} underlineColorAndroid='transparent'
+                <TextInput style={styles.input} placeholder="请输入密码" secureTextEntry={true} password={true} underlineColorAndroid='transparent'
                     placeholderTextColor="#adadad" onChangeText={(text) => this.setState({ password: text })} />
             </View>
             <View style={styles.inputLine}>
@@ -93,7 +95,10 @@ export default class RegisterPage extends Component {
                        style={[styles.inputIcon, {height: 16}]} resizeMode="stretch"/>
                 <TextInput style={[styles.input, {width:150}]} placeholder="请输入验证码"
                            placeholderTextColor="#adadad" onChangeText={(text) => this.setState({mobileCode: text})}/>
-                <Button title={this.state.codeTitle} buttonStyle={{width:90}} textStyle={{color: this.state.codeTitleColor, fontSize: 13,textDecorationLine:'underline'}} onPress={() => this.getMobileCode()}/>
+                <Button title={this.state.codeTitle} disabled={this.state.codeBtnDisable} 
+                buttonStyle={{borderWidth:1,borderRadius: 2,borderColor:this.state.codeTitleColor,width:90, height:30}} 
+                textStyle={{color: this.state.codeTitleColor, fontSize: 13}} 
+                onPress={() => this.getMobileCode()}/>
             </View>
             <View style={styles.inputLine}/>
             <View style={styles.inputContent}>
@@ -105,7 +110,7 @@ export default class RegisterPage extends Component {
             <View style={styles.inputLine}/>
             <Button title='注册' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
             imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{color:'white',fontSize:18}}
-            contentViewStyle={[styles.loginButton]} onPress={()=>this.registerClick()}/>
+            contentViewStyle={[styles.loginButton]} onPress={()=>this.registerClick()} disabled={this.state.registerBtnDisable}/>
 
         </View>);
     }
@@ -129,58 +134,74 @@ export default class RegisterPage extends Component {
             </TouchableWithoutFeedback>);
     }
 
+    /**
+     * 注册账号
+     */
     registerClick(){
-        if(this.state.mobile === undefined || this.state.mobile.length < 0){
-            ToastUtil.showError("请输入手机号");
-            return;
-        }
-        if(this.state.password === undefined || this.state.password.length < 6){
-            ToastUtil.showError("请输入密码至少6位");
-            return;
-        }
-        if(this.state.mobileCode === undefined || this.state.mobileCode.length < 1){
-            ToastUtil.showError("请输入验证码");
-            return;
-        }
-        var params = {"user_phone":this.state.mobile,"verification_code":this.state.mobileCode,"user_password":this.state.password};
-        // if(this.state.code !== undefined && this.state.code.length > 1){
-            params["register_code"] = this.state.code;
+        // if(this.state.mobile === undefined || this.state.mobile.length < 0){
+        //     ToastUtil.showError("请输入手机号");
+        //     return;
         // }
-        ToastUtil.showLoading();
-        UserData.register(params,(res)=>{
+        // if(this.state.password === undefined || this.state.password.length < 6){
+        //     ToastUtil.showError("请输入密码至少6位");
+        //     return;
+        // }
+        // if(this.state.mobileCode === undefined || this.state.mobileCode.length < 1){
+        //     ToastUtil.showError("请输入验证码");
+        //     return;
+        // }
+        // if(this.state.code === undefined || this.state.code.length < 1){
+        //     ToastUtil.showError("请输入邀请码");
+        //     return;
+        // }
+        
+        this.setState({registerBtnDisable:true});
+        UserData.register(this.state.mobile,this.state.password,this.state.mobileCode,this.state.code,(res)=>{
             // ToastUtil.dimiss();
-            ToastUtil.showShort(res.message);
-        },undefined);
+            this.setState({registerBtnDisable:false});
+            this.props.navigation.goBack();
+        },(err)=>{
+            this.setState({registerBtnDisable:false});
+        });
         
     }
 
+    /**
+     * 获取验证码方法
+     */
     getMobileCode(){
         if(this.state.mobile && this.state.mobile.length > 0 && !this.state.isGetCoding && this.state.codeTitle === codeTitle){
             this.setState({isGetCoding:true});
             UserData.getMobileCode(this.state.mobile,(res)=>{
                 this.setState({isGetCoding:false});
-                ToastUtil.showShort(res.message);
                 this._runCodeTime();
             },(error)=>{
                 this.setState({isGetCoding:false});
             });
         }
     }
+    /**
+     * 验证码获取计时器
+     */
     _runCodeTime(){
-        
+        this.setState({codeBtnDisable:true});
         this._timer = setInterval(function () {
             this.setState({codeTime:this.state.codeTime-1});
             this.setState({codeTitle:this.state.codeTime+"s后重发",codeTitleColor:ColorUtil.grayColor});
             
             if(this.state.codeTime == 1){
                 _this._stopCodeTime();
-                this.setState({codeTitle:codeTitle,codeTitleColor:ColorUtil.styleColor});
+                this.setState({codeTitle:codeTitle,codeTitleColor:ColorUtil.styleColor,codeBtnDisable:false});
             }
         }.bind(this), 1000);
     }
-
+    //停止验证码获取时间计时
     _stopCodeTime(){
         clearInterval(this._timer);
+    }
+
+    componentWillUnmount(){
+        this._stopCodeTime();
     }
 }
 
@@ -223,7 +244,6 @@ const styles = StyleSheet.create({
         height: 20,
         alignItems: 'flex-start',
         marginLeft: 18,
-        marginTop: 18,
     },
     inputLine: {
         backgroundColor: '#E9E9E9',
@@ -236,6 +256,7 @@ const styles = StyleSheet.create({
     inputContent: {
         flexDirection: 'row',
         marginLeft:40,
+        alignItems:'center',
         width: contentWidth,
     },
     loginBackground: {

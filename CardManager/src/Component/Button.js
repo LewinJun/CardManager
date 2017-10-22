@@ -76,7 +76,7 @@ export default class Button extends Component {
     render() {
         return (
             <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6}
-                                underlayColor={'transparent'} onPress={()=>this.pressHandler()} key={this.props.keyId}>
+                                underlayColor={'transparent'} onPress={()=>this.pressHandler()} key={this.props.keyId} disabled={this.props.disabled}>
                 <View style={[this.props.contentViewStyle, {flex:1,alignItems: 'center',
                     justifyContent: 'center'}]}>
                     {this.buttonImage()}

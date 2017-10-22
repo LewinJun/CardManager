@@ -21,6 +21,7 @@ import BannerImages from '../Component/BannerImages'
 import NavBar from '../Component/NavBar'
 import ViewLine from '../Component/ViewLine'
 import ColorUtil from '../Util/ColorUtil'
+import UserData from '../Data/Interface/UserData'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
@@ -88,6 +89,8 @@ export default class HomePage extends Component {
         if(deviceHeight < 667){
             cardHeight = cardHeight * heightFlex;
         }
+
+        UserData.initData();
 
     }
     componentDidMount(){

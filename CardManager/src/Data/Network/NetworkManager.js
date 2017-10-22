@@ -1,24 +1,25 @@
-
+import React, { Component, NetInfo } from 'react';
 
 const NetworkManager = {
-    post: function (url, params) {
+    post: function (url, params,header) {
         
-        return fetchRequest(url,params,'POST',undefined);
+        return fetchRequest(url,params,'POST',header);
 
     },
-    get: function(url, params){
-        return fetchRequest(url,params,'GET',undefined);
+    get: function(url, params,header){
+        return fetchRequest(url,params,'GET',header);
     }
+    
 }
 
 const fetchRequest = function (url, params, method, header) {
     if(header === undefined){
         header = {
-            "Content-Type": "application/json;charset=UTF-8",
+            "Content-Type": "multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d",
         };
     }else{
         if(header["Content-Type"] === undefined){
-            header["Content-Type"] = "application/json;charset=UTF-8";
+            header["Content-Type"] = "multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d";
         }
     }
     let requestParam = {
@@ -32,11 +33,20 @@ const fetchRequest = function (url, params, method, header) {
                 url = url + "&" + key + "=" + params[key];
             }
         }else{
-            requestParam.body = JSON.stringify(params);
+            let formData = new FormData();
+            for(var key in params){
+                formData.append(key,params[key]);
+            }
+            requestParam.body = formData;
         }
         
     }
     return new Promise(function (resolve, reject) {
+        // if(!NetInfo.isConnected){
+        //     var err = {"message":"没有网络连接","code":"500"};
+        //     reject(err);
+        //     return;
+        // }
         fetch(url, requestParam)
             .then((response) => response.json())
             .then((responseData) => {

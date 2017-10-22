@@ -39,9 +39,9 @@ public class ToastUtil extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void dimiss(){
+    public void dismiss(){
 
-        if(loadingDialog.activity != null){
+        if(loadingDialog != null && loadingDialog.activity != null){
             loadingDialog.activity.dimiss();
         }
 

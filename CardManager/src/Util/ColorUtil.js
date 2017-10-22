@@ -10,6 +10,8 @@ import {
 const ColorUtil = {
     lineGray:'#EBEBEB',
     styleColor:'#53e3a4',//App 主题颜色
-    grayColor:'#b5b6b7'
+    grayColor:'#b5b6b7',
+    grayTextColor:'#B9C7C4',
+    lineColor:'#EBEBEB'
 }
 export default ColorUtil;

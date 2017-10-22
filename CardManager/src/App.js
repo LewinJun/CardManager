@@ -17,10 +17,15 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 import AccountBookPage from './Containers/AccountBookPage'
 import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
+import HuanKuan from './Containers/HuanKuanPage'
+
+//用户模块
 import LoginPage from './Module/User/LoginPage'
 import RegisterPage from './Module/User/RegisterPage'
+import UserInfoPage from './Module/User/UserInfoPage'
 import ForgetPassWordPage from './Module/User/ForgetPassWordPage'
-import HuanKuan from './Containers/HuanKuanPage'
+import UpdatePasswordPage from './Module/User/UpdatePasswordPage'
+import RechargePage from './Module/User/RechargePage'
 import ColorUtil from './Util/ColorUtil'
 
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
@@ -71,7 +76,10 @@ const TabContainer = TabNavigator(
           },
       Login: { screen: LoginPage },
       ForgetPassWord:{screen: ForgetPassWordPage},
-      Register: { screen: RegisterPage }
+      Register: { screen: RegisterPage },
+      UserInfo:{ screen: UserInfoPage},
+      UpdatePassword:{screen:UpdatePasswordPage},
+      Recharge:{screen:RechargePage}
     },
     {
       headerMode: 'screen',
