@@ -5,6 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import {
     View,
     Platform,
+    DeviceEventEmitter,
     AsyncStorage,
 } from 'react-native';
 import DataUtil from './DataUtil'
@@ -75,7 +76,12 @@ const UserData = {
         } else if (Util.isEmpty(password) || password.length < 6) {
             ToastUtil.showError("密码不能为空(长度不能小于6)");
         } else {
-            DataUtil.postWithTip('login', { 'user_account': mobile, 'user_password': password }, success, fail);
+            DataUtil.postWithTip('login', { 'user_account': mobile, 'user_password': password }, (res)=>{
+                saveUserInfo(res);
+                if(success){
+                    success(res);
+                }
+            }, fail);
         }
     },
     /**
@@ -104,25 +110,30 @@ const UserData = {
             if (sex === '女' || sex == '0') {
                 user_sex = 0;
             }
-            DataUtil.postWithTip('user/editUserInfo', { 'user_nike': nickName, 'user_sex': user_sex }, success, fail);
+            DataUtil.postWithTip('user/editUserInfo', { 'user_nike': nickName, 'user_sex': user_sex }, (res)=>{
+                saveUserInfo(res);
+                if(success){
+                    success(res);
+                }
+            }, fail);
             return true;
         }
     },
     updatePassword: (oldPass, newPass, okPass, success, fail) => {
-        if (Util.isEmpty(oldPass) || password.length < 6) {
+        if (Util.isEmpty(oldPass) || oldPass.length < 6) {
             ToastUtil.showError("请输入原密码至少6位");
             return false;
-        } else if (Util.isEmpty(newPass) || password.length < 6) {
+        } else if (Util.isEmpty(newPass) || newPass.length < 6) {
             ToastUtil.showError("请输入新密码至少6位");
             return false;
-        } else if (Util.isEmpty(okPass) || password.length < 6) {
+        } else if (Util.isEmpty(okPass) || okPass.length < 6) {
             ToastUtil.showError("请输入确定密码至少6位");
             return false;
         } else if (okPass !== newPass) {
             ToastUtil.showError("新密码和确认密码不一致");
             return false;
         } else {
-            DataUtil.postWithTip('user/editUserInfo', { 'user_nike': nickName, 'user_sex': user_sex }, success, fail);
+            DataUtil.postWithTip('user/editPassword', { 'user_password': okPass,'old_password': oldPass }, success, fail);
             return true;
         }
 
@@ -155,7 +166,11 @@ const UserData = {
 
 const saveUserInfo = (res) => {
     try {
+        if(res.data.token === undefined){
+            res.data.token = userInfo.getUserInfo().token;
+        }
         userInfo.setUserInfo(res.data);
+        DeviceEventEmitter.emit("loginSuccess");
         AsyncStorage.setItem("loginAccount", res.data.user_account);
         AsyncStorage.setItem(userInfoKey, JSON.stringify(res.data));
     } catch (error) {

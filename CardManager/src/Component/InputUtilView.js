@@ -5,7 +5,6 @@ import {
     Text,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    TextInput,
     StyleSheet,
     ScrollView,
     Keyboard,
@@ -16,6 +15,7 @@ import {
 
 import ColorUtil from './../Util/ColorUtil'
 import MobileCodeView from './../Module/User/MobileCodeView'
+import TextField from './TextField'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
@@ -34,26 +34,6 @@ export default class InputView extends Component {
             isLoadMore: false,
         };
     }
-
-    _reset() {
-
-        this.props.scrollView.scrollTo({ y: 0 });
-
-    }
-
-    _onFocus(refName) {
-
-        setTimeout(() => {
-
-            let scrollResponder = this.props.scrollView.getScrollResponder();
-            scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-                ReactNative.findNodeHandle(this.refs[refName]), 0, true);
-
-        }, 100);
-    }
-
-
-
     render() {
         var width = this.props.contentWidth;
         if (this.props.contentWidth === undefined) {
@@ -69,12 +49,11 @@ export default class InputView extends Component {
             backgroundColor: 'transparent', marginLeft: 0,
         }}>
             <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>{this.props.label}</Text>
-            <TextInput editable={isEditable} style={{ marginLeft: 20, flex: 1 }}
+            <TextField editable={isEditable} style={{ marginLeft: 20, flex: 1 }}
                 placeholder={this.props.placeholder}
                 ref={this.props.refName}
                 onChangeText={(text) => this.props.changeText(text)}
-                onBlur={this._reset.bind(this)}
-                onFocus={this._onFocus.bind(this, this.props.refName)}
+                
                 defaultValue={this.props.defaultText} />
             {getCodeInput(this.props.isCode, this.props.mobile, this.props.method)}
         </View>);

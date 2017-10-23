@@ -24,12 +24,16 @@ import ColorUtil from '../Util/ColorUtil'
 import UserInfo from '../Data/Interface/UserInfo'
 import UserData from '../Data/Interface/UserData'
 import Button from '../Component/Button'
+import ListItemView from '../Component/ItemView/ItemView'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
 var deviceHeight = Dimensions.get('window').height;
 
 var topViewHeight = 236;
+
+var topUserTop = 64;
+var topMenuHeight = 54;
 
 var _this = undefined;
 
@@ -86,6 +90,11 @@ export default class MePage extends Component {
       isSetUserName: true,
     }
 
+    if(deviceHeight < 667){
+      topViewHeight = 200;
+      topUserTop = 40;
+      topMenuHeight = 44;
+    }
     
   }
 
@@ -95,8 +104,8 @@ export default class MePage extends Component {
   setUserInfo() {
     var info = _.cloneDeep(userInfoManager.getUserInfo());
     if (info) {
-      if (!info.user_name) {
-        info.user_name = "尚未设置用户名";
+      if (!info.user_nike) {
+        info.user_nike = "尚未设置用户名";
         this.setState({ isSetUserName: false });
       }
 
@@ -132,7 +141,7 @@ export default class MePage extends Component {
 
         <Image resizeMode='stretch' source={require('../images/me/me_top_bg.png')}
           style={{ width: deviceWidth, height: topViewHeight, position: 'absolute', top: 0 }} />
-        <View style={{ marginTop: 64 }}>
+        <View style={{ marginTop: topUserTop }}>
           {this.getUserInfoView()}
         </View>
       </View>
@@ -146,21 +155,20 @@ export default class MePage extends Component {
         <View>
           <View style={{ width: deviceWidth - 20, height: 40, alignItems: 'center', flexDirection: 'row', marginLeft: 20 }}>
             <Image source={require('../images/avatar.png')} style={{ width: 40, height: 40, }} />
-            <Text style={[{ backgroundColor: 'transparent', marginLeft: 10, fontSize: 18 }, userNameStyle]}>{this.state.userInfo.user_name}</Text>
+            <Text style={[{ backgroundColor: 'transparent', marginLeft: 10, fontSize: 18 }, userNameStyle]}>{this.state.userInfo.user_nike}</Text>
           </View>
           <View style={{ width: deviceWidth, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: '#ADEFD0', fontSize: 16, backgroundColor: 'transparent' }}>账户余额(元)</Text>
             <Text style={{ color: 'white', fontSize: 32, backgroundColor: 'transparent', marginTop: 10 }}>{this.state.userInfo.balance}</Text>
           </View>
           <View style={{
-            width: deviceWidth, height: 54, backgroundColor: '#4EE2B5',
-            marginTop: 10, elevation: 5, borderColor: ColorUtil.grayColor,
-            justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
+            width: deviceWidth, height: topMenuHeight, backgroundColor: '#4EE2B5',
+            marginTop: 13, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
             shadowColor: ColorUtil.grayColor, shadowOffset: { width: 5, height: 5 },
             shadowOpacity: 0.6, shadowRadius: 6, elevation: 5
           }}>
             {this.getTopMenuItemView('提现',()=>{
-
+              this.props.navigation.navigate('WithdrawPage');
             })}
             <View style={{ backgroundColor: 'white', width: 1, height: 25 }} />
             {this.getTopMenuItemView('充值',()=>{
@@ -206,34 +214,8 @@ export default class MePage extends Component {
 
     var datas = data.data;
 
-    for (var i = 0; i < datas.length; i++) {
-      var item = datas[i];
-      var contentWidth = deviceWidth - 30;
-      itemViews.push(
-        <MeItem width={contentWidth} item={item} key={"l" + i} onPress={(item) => { _this.itemClick(item) }} />
-      );
-      if (i >= 0 && i < datas.length - 1 && datas.length > 1) {
-        itemViews.push(<ViewLine width={contentWidth - 14} key={"aa" + i} />);
-      }
-    }
-    //内容view高度
-    var height = data.data.length * 48;
-
-    //最外部view高度
-    var vheight = height + 20;
-
-    var vWidth = contentWidth + 8;
-
     return (
-      <View style={{ width: vWidth, height: vheight, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
-        <View style={{
-          width: vWidth, height: height, justifyContent: 'center', alignItems: 'center',
-          shadowColor: ColorUtil.grayColor, shadowOffset: { width: 5, height: 5 }, shadowOpacity: 0.4, shadowRadius: 6,
-          borderWidth: 0.3, borderColor: ColorUtil.grayColor, borderRadius: 6, elevation: 3, height: height, backgroundColor: 'white'
-        }}>
-          {itemViews}
-        </View>
-      </View>
+      <ListItemView data = {datas} onItemClick={(item)=>_this.itemClick(item)}/>
     );
   }
 
@@ -268,37 +250,6 @@ export default class MePage extends Component {
           renderRow={this._renderItemComponent} />
 
       </View>
-    );
-  }
-}
-
-/**
- * cell视图
- */
-class MeItem extends Component {
-  // 初始化模拟数据
-  constructor(props) {
-    super(props);
-  }
-
-  getRightIcon() {
-    if (this.props.item.hideRight) {
-      return (<View />);
-    }
-    return (<Image source={require('../images/list_right.png')} style={{ width: 10, height: 15 }} resizeMode='stretch' />
-    );
-  }
-
-  render() {
-    return (
-      <TouchableHighlight activeOpacity={0.6}
-        underlayColor={'transparent'} onPress={() => this.props.onPress(this.props.item)} key={this.props.item.id + "1"} style={{ width: this.props.width }}>
-        <View style={{ flexDirection: 'row', backgroundColor: 'white', height: 44, alignItems: 'center' }} key={this.props.item.index + "3"}>
-          <Image source={this.props.item.icon} style={{ width: 25, height: 25, marginLeft: 10 }} resizeMode='stretch' />
-          <Text style={{ marginLeft: 20, color: '#333435', width: this.props.width - 80 }}>{this.props.item.title}</Text>
-          {this.getRightIcon()}
-        </View>
-      </TouchableHighlight>
     );
   }
 }

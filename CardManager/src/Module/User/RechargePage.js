@@ -61,13 +61,13 @@ export default class RechargePage extends Component {
             <View style={[styles.inputContentView, { marginTop: 20 }]}>
                 <InputView label='提取金额' placeholder='请输入昵称' defaultText={this.state.money} changeText={(text) => {
                     this.setState({ money: text });
-                }} refName="m1" scrollView = {this.refs.scrollView}/>
+                }} refName="m1" />
                 <ViewLine width={contentWidth + 5} />
 
 
                 <InputView label='充值金额' placeholder='请输入充值金额' defaultText={this.state.recharge} changeText={(text) => {
                     this.setState({ recharge: text });
-                }}  refName="m2" scrollView = {this.refs.scrollView}/>
+                }}  refName="m2" />
             </View>
         );
     }
@@ -79,17 +79,17 @@ export default class RechargePage extends Component {
 
                 <InputView label='信用卡号' placeholder='请输入信用卡号' defaultText={this.state.card} changeText={(text) => {
                     this.setState({ card: text });
-                }}  refName="m3" scrollView = {this.refs.scrollView}/>
+                }}  refName="m3"/>
                 <ViewLine width={contentWidth + 5} />
 
                 <InputView label='CVN2' placeholder='请输入信用卡背后三位CVN2' defaultText={this.state.cvn} changeText={(text) => {
                     this.setState({ cvn: text });
-                }}  refName="m4" scrollView = {this.refs.scrollView}/>
+                }}  refName="m4"/>
                 <ViewLine width={contentWidth + 5} />
 
                 <InputView label='有效期' placeholder='有效期(月/年)' defaultText={this.state.time} changeText={(text) => {
                     this.setState({ time: text });
-                }}  refName="m5" scrollView = {this.refs.scrollView}/>
+                }}  refName="m5"/>
 
             </View>
         );
@@ -102,14 +102,14 @@ export default class RechargePage extends Component {
 
                 <InputView label='手机号' placeholder='请输入手机号码' defaultText={this.state.mobile} changeText={(text) => {
                     this.setState({ mobile: text });
-                }}  refName="m6" scrollView = {this.refs.scrollView}/>
+                }}  refName="m6" />
 
                 <ViewLine width={contentWidth + 5} />
 
                 <InputView label='验证码' placeholder='请输入验证码' defaultText={this.state.mobileCode} changeText={(text) => {
                     this.setState({ mobileCode: text });
                 }} isCode={true} mobile={this.state.mobile} 
-                method={MobileCodeView.getCodeType.recharge}  refName="m7" scrollView = {this.refs.scrollView}/>
+                method={MobileCodeView.getCodeType.recharge}  refName="m7" />
 
             </View>
         );
@@ -128,17 +128,16 @@ export default class RechargePage extends Component {
     render() {
         return (
             <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
-                <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
+                <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white',justifyContent:'center' }}>
                     <ScrollView
                         ref="scrollView"
-                        keyboardShouldPersistTaps={true}
-                        style={{ flex: 1 }}>
+                        contentContainerStyle={{ flex: 1 ,alignItems: 'center'}}>
                         {this.getMoneyView()}
                         {this.getUserCardView()}
                         {this.getMobileView()}
 
-                        <Button title='修改' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
-                            imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
+                        <Button title='两个小时内到账，确认充值' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
+                            buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
                             contentViewStyle={[styles.loginButton]} onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
                     </ScrollView>
                 </View>
@@ -165,6 +164,6 @@ const styles = StyleSheet.create({
     loginButton: {
         marginTop: 10,
         width: contentWidth,
-        height: 70,
+        height: 65,
     }
 });

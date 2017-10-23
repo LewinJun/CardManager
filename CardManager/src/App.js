@@ -26,6 +26,7 @@ import UserInfoPage from './Module/User/UserInfoPage'
 import ForgetPassWordPage from './Module/User/ForgetPassWordPage'
 import UpdatePasswordPage from './Module/User/UpdatePasswordPage'
 import RechargePage from './Module/User/RechargePage'
+import WithdrawPage from './Module/User/WithdrawPage'
 import ColorUtil from './Util/ColorUtil'
 
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
@@ -79,7 +80,8 @@ const TabContainer = TabNavigator(
       Register: { screen: RegisterPage },
       UserInfo:{ screen: UserInfoPage},
       UpdatePassword:{screen:UpdatePasswordPage},
-      Recharge:{screen:RechargePage}
+      Recharge:{screen:RechargePage},
+      WithdrawPage:{screen:WithdrawPage},
     },
     {
       headerMode: 'screen',

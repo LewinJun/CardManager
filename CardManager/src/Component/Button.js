@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     AppRegistry,
     StyleSheet,
@@ -22,21 +22,32 @@ import {
  * contentViewStyle button内部主View的样式 style
  * keyId button的 key 可以区分点击了哪个按钮起到标记作用 string
  */
+
+var viewSize = { width: 0, height: 0 };
+
+var _this = undefined;
 export default class Button extends Component {
+
+
     constructor(props) {
         super(props);
+        _this = this;
+        this.state = {
+            width: 0,
+            height: 0,
+        };
     }
     //
     textView() {
         var buttonText = [];
-        if(this.props.iconSource !== null && this.props.iconSource !== undefined){
-            buttonText.push(<Image source={this.props.iconSource} resizeMode="contain" style={this.props.iconStyle} key="myButtonImageIcon"/>);
-        }if (this.props.title !== null && this.props.title !== undefined && this.props.title.length > 0) {
-            buttonText.push(<Text style={[this.props.textStyle,{backgroundColor:'transparent'}]} key="myButtonTitle">{this.props.title}</Text>);
+        if (this.props.iconSource !== null && this.props.iconSource !== undefined) {
+            buttonText.push(<Image source={this.props.iconSource} resizeMode="contain" style={this.props.iconStyle} key="myButtonImageIcon" />);
+        } if (this.props.title !== null && this.props.title !== undefined && this.props.title.length > 0) {
+            buttonText.push(<Text style={[this.props.textStyle, { backgroundColor: 'transparent' }]} key="myButtonTitle">{this.props.title}</Text>);
         } else {
-            buttonText.push(<View key="myButtonNullText"/>);
+            buttonText.push(<View key="myButtonNullText" />);
         }
-        
+
         return buttonText;
     }
 
@@ -49,39 +60,62 @@ export default class Button extends Component {
         //     </Image>);
         //     return textView;
         // } else {
-            return this.textView();
+        return this.textView();
         // }
     }
 
-    buttonImage(){
+    buttonImage() {
+        var imgWHStyle = {};
         if (this.props.source != null) {
-            return <Image resizeMode='stretch' source={this.props.source} style={[this.props.imageStyle,{position:'absolute',alignItems:'center',justifyContent:'center'}]}  resizeMode="contain" key="myButtonImage">
+            if (this.props.imageStyle === undefined) {
+                imgWHStyle.width = this.state.width;
+                imgWHStyle.height = this.state.height;
+            }
+            return <Image resizeMode='stretch' source={this.props.source} style={[this.props.imageStyle,imgWHStyle, { position: 'absolute', flex: 1 }]} key="myButtonImage">
             </Image>;
         }
-        return <View/>;
+        return <View />;
     }
 
-    pressHandler(){
-        if(this.props.onPress === undefined){
-            return;
-        }
-        if(this.props.keyId !== undefined){
-            this.props.onPress(this.props.keyId);
-        }else{
-            this.props.onPress();
+    _onLayout(event)
+    //使用大括号是为了限制let结构赋值得到的变量的作用域，因为接来下还要结构解构赋值一次
+    {
+        //获取根View的宽高，以及左上角的坐标值
+        let { x, y, width, height } = event.nativeEvent.layout;
+        if(_this.state.height < height){
+            _this.setState({
+                width:width,
+                height:height,
+            });
         }
         
     }
 
+
+
+    pressHandler() {
+        if (this.props.onPress === undefined) {
+            return;
+        }
+        if (this.props.keyId !== undefined) {
+            this.props.onPress(this.props.keyId);
+        } else {
+            this.props.onPress();
+        }
+
+    }
+
     render() {
         return (
-            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6}
-                                underlayColor={'transparent'} onPress={()=>this.pressHandler()} key={this.props.keyId} disabled={this.props.disabled}>
-                <View style={[this.props.contentViewStyle, {flex:1,alignItems: 'center',
-                    justifyContent: 'center'}]}>
+            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6} onLayout={this._onLayout}
+                underlayColor={'transparent'} onPress={() => this.pressHandler()} key={this.props.keyId} disabled={this.props.disabled} ref="btnView">
+                <View style={[this.props.contentViewStyle, {
+                    flex: 1, alignItems: 'center',
+                    justifyContent: 'center'
+                }]}>
                     {this.buttonImage()}
                     {this.buttonText()}
-                    
+
                 </View>
             </TouchableHighlight>
         );

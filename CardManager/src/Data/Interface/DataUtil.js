@@ -17,7 +17,7 @@ const showErrorTip = (res,fail) => {
     if(Platform.OS === 'android'){
         ToastUtil.dismiss();
     }
-    var message = res;
+    var message = "请求失败，没有code或请求异常";
     if(res.message){
         message = res.message;
     }
@@ -34,6 +34,10 @@ const checkSuccess = (res,isSuccessTip,success,fail) => {
     if(res.code !== "0"){
         showErrorTip(res,fail);
     }else{
+        var message = res.message;
+        if(message === undefined){
+            messag = "请求成功";
+        }
         if(isSuccessTip){
             ToastUtil.showShort(res.message);
         }
@@ -58,9 +62,7 @@ const post = (url,params,success,fail) => {
 }
 
 const request = (url,isSuccessTip,menthod,params,success,fail)=>{
-    if(userInfo.getToken() !== undefined){
-        params.token = userInfo.getToken();
-    }
+    
     if(isSuccessTip){
         ToastUtil.showLoading();
     }

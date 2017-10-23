@@ -5,7 +5,6 @@ import {
     Text,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    TextInput,
     StyleSheet,
     Keyboard,
     DeviceEventEmitter,
@@ -24,6 +23,9 @@ import ColorUtil from './../../Util/ColorUtil'
 import Util from './../../Util/Util'
 import ViewLine from '../../Component/ViewLine'
 import ToastUtil from '../../Component/ToastUtil'
+import TextField from '../../Component/TextField'
+import InputView from '../../Component/InputUtilView'
+
 
 
 var Dimensions = require('Dimensions');
@@ -45,11 +47,20 @@ export default class UserInfoPage extends Component {
             userInfo: userInfo.getUserInfo(),
             nickName: userInfo.getUserInfo().user_nike,
             sex: userInfo.getUserInfo().user_sex,
+            sexStr: userInfo.getUserInfo().user_sex == '1'?'男':'女',
             mobile: userInfo.getUserInfo().user_phone,
             userName: userInfo.getUserInfo().user_name,
             card: userInfo.getUserInfo().user_id_card,
             disabledBtn:false,
         }
+    }
+
+    _sexClick(){
+        Keyboard.dismiss();
+        this.refs.pickSex.show('aaa',(index)=>{
+            this.setState({sex:index});
+            this.setState({sexStr:index == '1'?'男':'女'});
+        })
     }
 
     getUserInfoView() {
@@ -67,10 +78,8 @@ export default class UserInfoPage extends Component {
                 }}>
                     <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>性别</Text>
                     <TouchableHighlight style={{ flex: 1 ,marginLeft:20}} activeOpacity={0.6}
-                        underlayColor={'transparent'} onPress={() => this.refs.pickSex.show('aaa',(index)=>{
-                            this.setState({sex:index});
-                        })} key={this.props.keyId} disabled={this.props.disabled}>
-                        <Text style={{ fontSize: 16 }}>{this.state.sex}</Text>
+                        underlayColor={'transparent'} onPress={() => this._sexClick()} key={this.props.keyId} disabled={this.props.disabled}>
+                        <Text style={{ fontSize: 16 }}>{this.state.sexStr}</Text>
 
                     </TouchableHighlight>
                     <Image source={require('../../images/list_right.png')} style={{ width: 10, height: 15 }} resizeMode='stretch' />
@@ -88,19 +97,21 @@ export default class UserInfoPage extends Component {
 
         return (
             <View style={[styles.inputContentView, { marginTop: 20 }]}>
-                {this.getInputView('身份证','请输入身份证号码', this.state.card, (text) => {
+           
+                <InputView label='身份证' placeholder='请输入身份证号码' defaultText={this.state.card} changeText={(text) => {
                     this.setState({ card: text });
-                })}
+                }}  refName="m6" editable = {false}/>
                 <ViewLine width={contentWidth + 5} />
-                {this.getInputView('手机号码','请输入手机号', this.state.mobile, (text) => {
+                
+                <InputView label='手机号码' placeholder='请输入手机号' defaultText={this.state.mobile} changeText={(text) => {
                     this.setState({ mobile: text });
-                })}
+                }}  refName="m6" editable = {false}/>
 
             </View>
         );
     }
 
-    getInputView(label,placeHolder, defaultText, changeText) {
+    getInputView(label,placeHolder, defaultText, changeText,) {
 
         return (
             <View style={{
@@ -109,14 +120,14 @@ export default class UserInfoPage extends Component {
                 backgroundColor: 'transparent', marginLeft: 0,
             }}>
                 <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>{label}</Text>
-                <TextInput style={{ marginLeft: 20, flex: 1 }} placeholder = {placeHolder} onChangeText={(text) => changeText(text)} defaultValue={defaultText} />
+                <TextField style={{ marginLeft: 20, flex: 1 }} placeholder = {placeHolder} onChangeText={(text) => changeText(text)} defaultValue={defaultText} />
             </View>
         );
     }
 
     saveClick() {
         this.setState({disabledBtn:true});
-        UserData.saveInfo(this.state.mobile, this.state.sex, (res)=>{
+        UserData.saveInfo(this.state.nickName, this.state.sex, (res)=>{
             this.setState({disabledBtn:false});
             this.props.navigation.goBack();
         },(err)=>{
@@ -134,7 +145,7 @@ export default class UserInfoPage extends Component {
                 <Button title='修改' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
                     imageStyle={styles.loginButton} buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
                     contentViewStyle={[styles.loginButton]} onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
-                <PickerWidget options={["男", "女"]} ref="pickSex" defaultVal = {this.state.sex}/>
+                <PickerWidget options={["男", "女"]} ref="pickSex" defaultVal = {this.state.sexStr}/>
             </View>
             </TouchableWithoutFeedback>
         );
@@ -151,7 +162,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.3,
         borderColor: ColorUtil.grayColor,
         borderRadius: 6,
-        elevation: 3,
+        elevation: 0.6,
         justifyContent: 'center',
         alignItems: 'center',
         width: contentViewWidth,

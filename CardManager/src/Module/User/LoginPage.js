@@ -94,7 +94,7 @@ export default class LoginPage extends Component {
             UserData.login(this.state.mobile,this.state.password,(res) => {
                 
                 this.setState({loginBtnDisabled:false});
-                DeviceEventEmitter.emit("loginSuccess");
+                
                 this.props.navigation.goBack();
             }, (error) => {
                 this.setState({loginBtnDisabled:false});                

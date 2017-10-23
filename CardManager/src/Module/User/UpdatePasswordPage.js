@@ -42,6 +42,9 @@ export default class UpdatePasswordPage extends Component {
         super(props);
         this.state = {
             userInfo: userInfo.getUserInfo(),
+            oldPass:'',
+            newPass:'',
+            okNewPass:'',
         }
     }
 
@@ -49,15 +52,15 @@ export default class UpdatePasswordPage extends Component {
 
         return (
             <View style={[styles.inputContentView, { marginTop: 20 }]}>
-                {this.getInputView('原密码','请输入原密码',true, this.state.nickName, (text) => {
-                    this.setState({ olPass: text });
+                {this.getInputView('原密码','请输入原密码',true, this.state.oldPass, (text) => {
+                    this.setState({ oldPass: text });
                 })}
                 <ViewLine width={contentWidth + 5} />
-                {this.getInputView('新密码','请输入新密码',true, this.state.userName, (text) => {
+                {this.getInputView('新密码','请输入新密码',true, this.state.newPass, (text) => {
                     this.setState({ newPass: text });
                 })}
                 <ViewLine width={contentWidth + 5} />
-                {this.getInputView('确定新密码','请输入确定密码',true, this.state.userName, (text) => {
+                {this.getInputView('确定新密码','请输入确定密码',true, this.state.okNewPass, (text) => {
                     this.setState({ okNewPass: text });
                 })}
             </View>
@@ -79,7 +82,7 @@ export default class UpdatePasswordPage extends Component {
     }
 
     saveClick() {
-        UserData.saveInfo(this.state.mobile, this.state.sex, (res)=>{
+        UserData.updatePassword(this.state.oldPass, this.state.newPass,this.state.okNewPass, (res)=>{
             this.props.navigation.goBack();
         },undefined);
     }
