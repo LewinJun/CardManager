@@ -21,6 +21,7 @@ import TabBarItem from '../Component/TabBarItem'
 import NavBar from '../Component/NavBar'
 import ViewLine from '../Component/ViewLine'
 import ColorUtil from '../Util/ColorUtil'
+import Router from '../Util/Router'
 import UserInfo from '../Data/Interface/UserInfo'
 import UserData from '../Data/Interface/UserData'
 import Button from '../Component/Button'
@@ -229,6 +230,8 @@ export default class MePage extends Component {
       this.props.navigation.navigate('UserInfo');
     }else if(item.id === '1'){
       this.props.navigation.navigate('UpdatePassword');
+    }else if(item.id === '3'){
+      Router.pushPage(this,Router.pageNames.NoticePage);
     }
 
   }

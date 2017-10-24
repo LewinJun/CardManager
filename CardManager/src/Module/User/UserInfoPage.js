@@ -58,8 +58,8 @@ export default class UserInfoPage extends Component {
     _sexClick(){
         Keyboard.dismiss();
         this.refs.pickSex.show('aaa',(index)=>{
-            this.setState({sex:index});
-            this.setState({sexStr:index == '1'?'男':'女'});
+            this.setState({sex:index === '男'?'1':'0'});
+            this.setState({sexStr:index});
         })
     }
 
@@ -86,9 +86,10 @@ export default class UserInfoPage extends Component {
 
                 </View>
                 <ViewLine width={contentWidth + 5} />
-                {this.getInputView('真实姓名','请输入真实姓名', this.state.userName, (text) => {
+                
+                <InputView label='真实姓名' placeholder='请输入真实姓名' defaultText={this.state.userName} changeText={(text) => {
                     this.setState({ userName: text });
-                })}
+                }}  refName="m6" editable = {false}/>
             </View>
         );
     }

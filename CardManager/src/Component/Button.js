@@ -32,10 +32,20 @@ export default class Button extends Component {
     constructor(props) {
         super(props);
         _this = this;
+        var ssss = this.props.buttonStyle;
+        var iwidth = 0;
+        var iheight = 0;
+
+        if(ssss && ssss.width && ssss.height){
+            iwidth = ssss.width;
+            iheight = ssss.height;
+        }
+
         this.state = {
-            width: 0,
-            height: 0,
+            width: iwidth,
+            height: iheight,
         };
+        
     }
     //
     textView() {
@@ -65,13 +75,9 @@ export default class Button extends Component {
     }
 
     buttonImage() {
-        var imgWHStyle = {};
-        if (this.props.source != null) {
-            if (this.props.imageStyle === undefined) {
-                imgWHStyle.width = this.state.width;
-                imgWHStyle.height = this.state.height;
-            }
-            return <Image resizeMode='stretch' source={this.props.source} style={[this.props.imageStyle,imgWHStyle, { position: 'absolute', flex: 1 }]} key="myButtonImage">
+        if (this.props.source) {
+            
+            return <Image resizeMode='stretch' source={this.props.source} style={[{width:this.state.width,height:this.state.height},this.props.imageStyle, { position: 'absolute', flex: 1 }]} key="myButtonImage">
             </Image>;
         }
         return <View />;
@@ -107,7 +113,7 @@ export default class Button extends Component {
 
     render() {
         return (
-            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6} onLayout={this._onLayout}
+            <TouchableHighlight style={[this.props.buttonStyle]} activeOpacity={0.6} onLayout={this._onLayout.bind(this)}
                 underlayColor={'transparent'} onPress={() => this.pressHandler()} key={this.props.keyId} disabled={this.props.disabled} ref="btnView">
                 <View style={[this.props.contentViewStyle, {
                     flex: 1, alignItems: 'center',

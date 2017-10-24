@@ -4,6 +4,13 @@ const isEmpty = (content) => {
     }
     return false;
 }
+const getImgUrl = (url) => {
+    if(url.indexOf('http')<0){
+        return 'http://weiyuntest-1253191691.image.myqcloud.com/'+url;
+    }
+    return url; 
+}
 export default {
     isEmpty,
+    getImgUrl,
 };

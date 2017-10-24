@@ -43,7 +43,7 @@ const UserData = {
 
         var params = { "user_phone": mobile, "verification_code": mobileCode, "user_password": password };
         params["register_code"] = code;
-        DataUtil.getWithTip(DataUtil.GetUrl('register'), params,success,fail);
+        DataUtil.getWithTip(DataUtil.GetUrl('register'), params, success, fail);
         return true;
 
     },
@@ -52,7 +52,7 @@ const UserData = {
      * 
      */
     getMobileCodeMethod: (mobile, method, success, fail) => {
-        DataUtil.getWithTip(DataUtil.GetUrl('getVerificationCode'), { 'user_phone': mobile, 'method': method },success,fail);
+        DataUtil.getWithTip(DataUtil.GetUrl('getVerificationCode'), { 'user_phone': mobile, 'method': method }, success, fail);
     },
     /**
      * 注册获取验证码
@@ -76,9 +76,9 @@ const UserData = {
         } else if (Util.isEmpty(password) || password.length < 6) {
             ToastUtil.showError("密码不能为空(长度不能小于6)");
         } else {
-            DataUtil.postWithTip('login', { 'user_account': mobile, 'user_password': password }, (res)=>{
+            DataUtil.postWithTip('login', { 'user_account': mobile, 'user_password': password }, (res) => {
                 saveUserInfo(res);
-                if(success){
+                if (success) {
                     success(res);
                 }
             }, fail);
@@ -110,9 +110,9 @@ const UserData = {
             if (sex === '女' || sex == '0') {
                 user_sex = 0;
             }
-            DataUtil.postWithTip('user/editUserInfo', { 'user_nike': nickName, 'user_sex': user_sex }, (res)=>{
+            DataUtil.postWithTip('user/editUserInfo', { 'user_nike': nickName, 'user_sex': user_sex }, (res) => {
                 saveUserInfo(res);
-                if(success){
+                if (success) {
                     success(res);
                 }
             }, fail);
@@ -133,10 +133,23 @@ const UserData = {
             ToastUtil.showError("新密码和确认密码不一致");
             return false;
         } else {
-            DataUtil.postWithTip('user/editPassword', { 'user_password': okPass,'old_password': oldPass }, success, fail);
+            DataUtil.postWithTip('user/editPassword', { 'user_password': okPass, 'old_password': oldPass }, success, fail);
             return true;
         }
 
+    },
+    getConfig: (success,fail) => {
+        DataUtil.getCacheAsyncForKey('appConfig',(value)=>{
+            if(value && success){
+                success(JSON.parse(value));
+            }
+        });
+        DataUtil.post('getAppConfig', {}, (res)=>{
+            if(success){
+                success(res.data);
+            }
+            DataUtil.saveCacheForKeyValue('appConfig',res.data);
+        }, fail);        
     },
     /**
      * 初始化数据
@@ -166,13 +179,19 @@ const UserData = {
 
 const saveUserInfo = (res) => {
     try {
-        if(res.data.token === undefined){
-            res.data.token = userInfo.getUserInfo().token;
+        var uInfo = userInfo.getUserInfo();
+
+        if(uInfo === undefined){
+            uInfo = {};
         }
-        userInfo.setUserInfo(res.data);
+        
+        for(var key in res.data){
+            uInfo[key] = res.data[key];
+        }
+        userInfo.setUserInfo(uInfo);
         DeviceEventEmitter.emit("loginSuccess");
-        AsyncStorage.setItem("loginAccount", res.data.user_account);
-        AsyncStorage.setItem(userInfoKey, JSON.stringify(res.data));
+        AsyncStorage.setItem("loginAccount", uInfo.user_account);
+        AsyncStorage.setItem(userInfoKey, JSON.stringify(uInfo));
     } catch (error) {
         console.log(error);
     }
@@ -194,5 +213,6 @@ const getUserInfo = (callBack) => {
         console.log(error);
     }
 }
+
 
 export default UserData;

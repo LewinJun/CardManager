@@ -11,6 +11,8 @@ import {
     View
 } from 'react-native';
 
+import Util from '../Util/Util'
+
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
 var contentHeight = 200;
@@ -55,8 +57,10 @@ export default class BannerView extends Component {
         for (var i = 0; i < this.props.images.length; i++) {
             var imgUrl = this.props.images[i] + '';
 
+            imgUrl = Util.getImgUrl(imgUrl);
+
             imageViews.push(
-                <TouchableWithoutFeedback onPress={() => this.props.itemClick(this.state.currentPage + 'a')}
+                <TouchableWithoutFeedback onPress={() => this.props.itemClick(this.state.currentPage)}
                     key={i} ref="swiper">
                     <Image
                         key={i}

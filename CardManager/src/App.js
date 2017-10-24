@@ -1,13 +1,13 @@
 'use strict';
 
 // import React from 'react'
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    Image,
-    View
+  AppRegistry,
+  StyleSheet,
+  Text,
+  Image,
+  View
 } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 
@@ -18,6 +18,7 @@ import AccountBookPage from './Containers/AccountBookPage'
 import HomePage from './Containers/HomePage'
 import MePage from './Containers/MePage'
 import HuanKuan from './Containers/HuanKuanPage'
+import WebViewPage from './Containers/WebViewPage'
 
 //用户模块
 import LoginPage from './Module/User/LoginPage'
@@ -27,7 +28,11 @@ import ForgetPassWordPage from './Module/User/ForgetPassWordPage'
 import UpdatePasswordPage from './Module/User/UpdatePasswordPage'
 import RechargePage from './Module/User/RechargePage'
 import WithdrawPage from './Module/User/WithdrawPage'
+import NoticePage from './Module/User/NoticePage'
+import NoticeDetailPage from './Module/User/NoticeDetailPage'
 import ColorUtil from './Util/ColorUtil'
+
+import Router from './Util/Router'
 
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
 const TransitionConfiguration = () => ({
@@ -41,62 +46,66 @@ const TransitionConfiguration = () => ({
 });
 
 const TabContainer = TabNavigator(
-    {
-      Main: { screen: HomePage},
-      HuanKuan:{screen:HuanKuan},
-      Book: { screen: AccountBookPage },
-      Me: { screen: MePage }
-    },
-    {
-      lazy: true,
-      tabBarPosition: 'bottom',
-      tabBarOptions: {
-        activeTintColor: ColorUtil.styleColor,
-        inactiveTintColor: '#999999',
-        showIcon: true,
-        style: {
-          backgroundColor: '#fff'
-        },
-        indicatorStyle: {
-          opacity: 0
-        },
-        tabStyle: {
-          padding: 0
-        }
+  {
+    Main: { screen: HomePage },
+    HuanKuan: { screen: HuanKuan },
+    Book: { screen: AccountBookPage },
+    Me: { screen: MePage }
+  },
+  {
+    lazy: true,
+    tabBarPosition: 'bottom',
+    tabBarOptions: {
+      activeTintColor: ColorUtil.styleColor,
+      inactiveTintColor: '#999999',
+      showIcon: true,
+      style: {
+        backgroundColor: '#fff'
+      },
+      indicatorStyle: {
+        opacity: 0
+      },
+      tabStyle: {
+        padding: 0
       }
     }
-  );
-  
-  const App = StackNavigator(
-    {
-        Home: {
-            screen: TabContainer,
-            navigationOptions: {
-              headerLeft: null
-            }
-          },
-      Login: { screen: LoginPage },
-      ForgetPassWord:{screen: ForgetPassWordPage},
-      Register: { screen: RegisterPage },
-      UserInfo:{ screen: UserInfoPage},
-      UpdatePassword:{screen:UpdatePasswordPage},
-      Recharge:{screen:RechargePage},
-      WithdrawPage:{screen:WithdrawPage},
-    },
-    {
-      headerMode: 'screen',
+  }
+);
+
+const App = StackNavigator(
+  {
+    Home: {
+      screen: TabContainer,
       navigationOptions: {
-        headerStyle: {
-          backgroundColor: ColorUtil.styleColor
-        },
-        headerTitleStyle: {
-          color: '#fff',
-          fontSize: 20
-        },
-        headerTintColor: '#fff'
+        headerLeft: null
+      }
+    },
+    Login: { screen: LoginPage },
+    ForgetPassWord: { screen: ForgetPassWordPage },
+    Register: { screen: RegisterPage },
+    UserInfo: { screen: UserInfoPage },
+    UpdatePassword: { screen: UpdatePasswordPage },
+    Recharge: { screen: RechargePage },
+    WithdrawPage: { screen: WithdrawPage },
+    BookList: { screen: AccountBookPage },
+    WebViewPage: { screen: WebViewPage },
+    NoticePage: { screen: NoticePage },
+    NoticeDetailPage: { screen: NoticeDetailPage },
+  },
+  {
+    headerMode: 'screen',
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: ColorUtil.styleColor
       },
-      transitionConfig: TransitionConfiguration
-    }
-  );
-  
-  export default App;
+      headerTitleStyle: {
+        color: '#fff',
+        fontSize: 20
+      },
+      headerTintColor: '#fff'
+    },
+    transitionConfig: TransitionConfiguration
+  }
+);
+
+export default App;

@@ -29,6 +29,8 @@ import TabBarItem from '../Component/TabBarItem'
 import Button from '../Component/Button'
 import Footer from '../Component/Footer'
 import ColorUtil from '../Util/ColorUtil'
+import Util from '../Util/Util'
+import CardMoneyData from '../Data/Interface/CardMoneyData'
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -36,10 +38,9 @@ var dataSourceArrayInit = [
   '展会列表1---展会活动', '展会列表---展会活动', '北京展会', '上海展会', '广州展会', '深圳展会', '哈哈哈', '你话好多疯狂减肥还是的空间划分空间上的空间发挥科技'
 ];
 var dataSourceArray = dataSourceArrayInit.concat();
-
+var _this = undefined;
 export default class AccountBookPage extends Component {
 
-  static _this = null;
 
   static navigationOptions = {
     title: '账本',
@@ -66,20 +67,38 @@ export default class AccountBookPage extends Component {
   // 初始化模拟数据
   constructor(props) {
     super(props);
+    _this = this;
+
     var menuViewDataArray = [
-      { text: '全部', isSelect: true }, { text: '纯消费', isSelect: false }, { text: '还款消费', isSelect: false }, { text: '快速消费', isSelect: false }, { text: '普通消费', isSelect: false }, { text: '充值', isSelect: false }, { text: '提现', isSelect: false }
+      { text: '全部', isSelect: true, type: CardMoneyData.ConsumeDealType.all },
+      { text: '刷卡消费', isSelect: false, type: CardMoneyData.ConsumeDealType.payCard },
+      { text: '快速还款', isSelect: false, type: CardMoneyData.ConsumeDealType.repayment },
+      { text: '提现', isSelect: false, type: CardMoneyData.ConsumeDealType.withdraw },
+      { text: '充值', isSelect: false, type: CardMoneyData.ConsumeDealType.recharge }
     ];
+
+    var selectType = CardMoneyData.ConsumeDealType.all;
+    if (this.props.navigation.state.params && !Util.isEmpty(this.props.navigation.state.params.selectType)) {
+      selectType = this.props.navigation.state.params.selectType;
+
+      for (var i = 0; i < menuViewDataArray.length; i++) {
+        menuViewDataArray[i].isSelect = false;
+        if (selectType === menuViewDataArray[i].type) {
+          menuViewDataArray[i].isSelect = true;
+        }
+      }
+    }
 
     this.state = {
       dataSource: ds.cloneWithRows(dataSourceArray),
       menuDataSource: ds.cloneWithRows(menuViewDataArray),
       menuDataSourceList: menuViewDataArray,
       menuViewHeight: new Animated.Value(0),
-      menuItemSelectIndex: "0",
+      menuItemSelectIndex: selectType,
       isRefreshing: false,
       isLoadMore: false,
     };
-    _this = this;
+
   }
 
   rightBtnClick() {
@@ -120,15 +139,17 @@ export default class AccountBookPage extends Component {
 
   menuItemClick(rowID) {
     var array = this.state.menuDataSourceList;
+    var selectType = CardMoneyData.ConsumeDealType.all;
     for (var i = 0; i < array.length; i++) {
       array[i].isSelect = false;
       if (rowID === i + '') {
         array[i].isSelect = true;
+        selectType = array[i].type;
       }
     }
     console.log('rowID:' + rowID);
     //刷新menuView ListView
-    this.setState({ menuDataSource: ds.cloneWithRows(array), menuDataSourceList: array });
+    this.setState({ menuDataSource: ds.cloneWithRows(array), menuDataSourceList: array, menuItemSelectIndex: selectType });
     this.rightBtnClick();
   }
 
@@ -195,12 +216,12 @@ export default class AccountBookPage extends Component {
           }}
           refreshControl={
             <RefreshControl
-              style={{backgroundColor: 'transparent'}}
+              style={{ backgroundColor: 'transparent' }}
               refreshing={this.state.isRefreshing}
               onRefresh={() => {
-                 this.setState({ isRefreshing:true});
+                this.setState({ isRefreshing: true });
                 setTimeout(() => {
-                  this.setState({ dataSource: ds.cloneWithRows(dataSourceArrayInit) ,isRefreshing:false});
+                  this.setState({ dataSource: ds.cloneWithRows(dataSourceArrayInit), isRefreshing: false });
                 }, 3000);
               }}
               title="Loading..."

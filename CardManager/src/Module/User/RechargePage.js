@@ -138,7 +138,7 @@ export default class RechargePage extends Component {
 
                         <Button title='两个小时内到账，确认充值' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
                             buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
-                            contentViewStyle={[styles.loginButton]} onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
+                            onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
                     </ScrollView>
                 </View>
             </TouchableWithoutFeedback>

@@ -14,9 +14,6 @@ import {
     Animated,
     Alert,
 } from 'react-native';
-import {
-    DrawerNavigator
-} from 'react-navigation';
 
 import UserData from '../../Data/Interface/UserData'
 import UserInfo from '../../Data/Interface/UserInfo'
@@ -29,6 +26,7 @@ import CommonStyle from './../../Util/CommonStyle'
 import ViewLine from '../../Component/ViewLine'
 import ToastUtil from '../../Component/ToastUtil'
 import ItemView from '../../Component/ItemView/ItemView'
+import CardMoneyData from '../../Data/Interface/CardMoneyData'
 
 
 var Dimensions = require('Dimensions');
@@ -53,7 +51,7 @@ export default class WithdrawPage extends Component {
             textStyle={{ color: 'white', fontSize: 16 }}
             buttonStyle={{ width: 70, height: 40 }}
       
-            onPress={() => _this.rightBtnClick()}
+            onPress={() => __this.rightBtnClick()}
           />)
     }
     constructor(props) {
@@ -61,10 +59,15 @@ export default class WithdrawPage extends Component {
         __this = this;
         this.state = {
             nickName: userInfo.getUserInfo().user_nike,
+
             selectCard: '招商银行(7890)',
             disabledBtn: false,
         }
 
+    }
+
+    rightBtnClick(){
+        this.props.navigation.navigate('BookList',{ selectType: CardMoneyData.ConsumeDealType.withdraw });
     }
 
     cardClick(item) {
@@ -82,7 +85,7 @@ export default class WithdrawPage extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ flex: 1, alignItems: 'center' ,backgroundColor:'white'}}>
 
                 <View style={{ marginTop: 10 }}>
                     <ItemView data={[{ title: this.state.selectCard, icon: require('../../images/me/zhaoshang_icon.png'), id: '7' }]} onItemClick={(item) => __this.cardClick(item)} />
@@ -104,7 +107,7 @@ export default class WithdrawPage extends Component {
                 </View>
 
                 <Button title='两个小时内到账，确认提现' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
-                    buttonStyle={styles.loginButton} textStyle={{ color: 'white', fontSize: 18 }}
+                    buttonStyle={{width: deviceWidth - 50,height: 65,marginTop: 10,}} textStyle={{ color: 'white', fontSize: 18 }}
                     onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
 
                 <PickerWidget options={["中国银行(7890)", "招商银行(7890)"]} ref="pickCardSex" defaultVal={this.state.selectCard} />
@@ -117,7 +120,6 @@ export default class WithdrawPage extends Component {
 
 const styles = StyleSheet.create({
     loginButton: {
-        backgroundColor:'white',
         width: deviceWidth - 50,
         height: 65,
         marginTop: 10,
