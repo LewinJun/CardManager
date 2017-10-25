@@ -68,7 +68,7 @@ export default class LoginPage extends Component {
                 <TextInput style={styles.input} placeholder="请输入账号" keyboardType='phone-pad' underlineColorAndroid='transparent'
                     placeholderTextColor="#adadad" ref={(input) => {
                         this.passMobile = input;
-                    }} onChangeText={(text) => this.setState({ mobile: text })} />
+                    }} onChangeText={(text) => this.setState({ mobile: text })} defaultValue={this.state.mobile}/>
             </View>
             <View style={styles.inputLine}>
             </View>

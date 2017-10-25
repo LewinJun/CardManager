@@ -70,14 +70,20 @@ export default class ListViewRefresh extends Component {
           removeClippedSubviews={this.props.removeClippedSubviews}
           renderRow={this.props.renderRow}
           onEndReached={() => {
-            this.setState({ isLoadMore: true });
-            if (this.props.onMore !== undefined) {
-              this.props.onMore();
+            if(this.props.onMore !== null){
+              this.setState({ isLoadMore: true });
+              if (this.props.onMore !== undefined) {
+                this.props.onMore();
+              }
             }
+            
             
           }}
           onEndReachedThreshold={10}
           renderFooter={() => {
+            if(this.onMore === null){
+              return <View />;
+            }
             return this.state.isLoadMore ? <Footer /> : <View />;
           }}
           refreshControl={

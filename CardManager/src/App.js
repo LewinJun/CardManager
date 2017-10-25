@@ -30,6 +30,10 @@ import RechargePage from './Module/User/RechargePage'
 import WithdrawPage from './Module/User/WithdrawPage'
 import NoticePage from './Module/User/NoticePage'
 import NoticeDetailPage from './Module/User/NoticeDetailPage'
+//信用卡模块
+import AddCardPage from './Module/Card/AddCardPage'
+
+
 import ColorUtil from './Util/ColorUtil'
 
 import Router from './Util/Router'
@@ -91,6 +95,7 @@ const App = StackNavigator(
     WebViewPage: { screen: WebViewPage },
     NoticePage: { screen: NoticePage },
     NoticeDetailPage: { screen: NoticeDetailPage },
+    AddCardPage: { screen: AddCardPage },
   },
   {
     headerMode: 'screen',

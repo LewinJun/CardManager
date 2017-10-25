@@ -30,6 +30,7 @@ const pageNames = {
     BookList: 'BookList',
     NoticePage:'NoticePage',
     NoticeDetailPage:'NoticeDetailPage',
+    AddCardPage:'AddCardPage',
 };
 
 export default {
