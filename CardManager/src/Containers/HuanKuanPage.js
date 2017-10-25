@@ -72,7 +72,7 @@ export default class HuanKuan extends Component {
         <View style={{ width: contentWidth, height: 140 }}>
           <Image resizeMode='stretch' source={rowData.bg} style={{ position: 'absolute', width: contentWidth, height: 140 }} />
           <View style={{ marginTop: 50, alignItems: 'center' }}>
-            <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.card}</Text>
+            <Text style={{ backgroundColor: 'transparent', color: 'white',fontSize:21 }}>{rowData.card}</Text>
             <ViewLine lineStyle={{ backgroundColor: 'white', width: contentWidth - 40, marginTop: 10, height: 0.4, opacity: 0.4 }} />
 
             <View style={{ flexDirection: 'row', width: contentWidth, marginTop: 10 }}>
