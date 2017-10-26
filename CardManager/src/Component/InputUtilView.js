@@ -71,8 +71,8 @@ export default class InputView extends Component {
                     backgroundColor: 'transparent', marginLeft: 0,
                 }}>
 
-                    <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>{this.props.label}</Text>
-                    <TextField editable={isEditable} style={{ marginLeft: 20, flex: 1 }}
+                    <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 ,width:70,}}>{this.props.label}</Text>
+                    <TextField editable={isEditable} style={{ marginLeft: 10, flex: 1 ,}}
                         placeholder={this.props.placeholder}
                         ref={this.props.refName}
                         onChangeText={(text) => this.props.changeText(text)}

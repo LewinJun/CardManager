@@ -168,7 +168,7 @@ export default class AddCardPage extends Component {
                 <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white', justifyContent: 'center' }}>
                     <ScrollView
                         ref="scrollView"
-                        contentContainerStyle={{ flex: 1, alignItems: 'center' }}>
+                        contentContainerStyle={{ alignItems: 'center', }}>
                         {this.getContentView()}
                         <Text style={{color:'red',backgroundColor:'transparent',fontSize:10,marginTop:10}}>注：添加信用卡即做一笔10元的消费交易作为验证信用卡的正确性</Text>
                         <Button title='添加信用卡' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}

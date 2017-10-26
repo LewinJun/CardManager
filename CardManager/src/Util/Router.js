@@ -31,6 +31,7 @@ const pageNames = {
     NoticePage:'NoticePage',
     NoticeDetailPage:'NoticeDetailPage',
     AddCardPage:'AddCardPage',
+    CardDetailPage:'CardDetailPage',
 };
 
 export default {

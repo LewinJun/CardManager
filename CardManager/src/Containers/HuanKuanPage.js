@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   DeviceEventEmitter,
+  TouchableHighlight,
   Alert,
   View
 } from 'react-native';
@@ -86,7 +87,7 @@ export default class HuanKuan extends Component {
 
   refreshData() {
     CardMoneyData.getCreditList((data) => {
-      
+
       for (var i in data) {
         var item = data[i];
         var cardName = item.credit_card_num;
@@ -98,41 +99,48 @@ export default class HuanKuan extends Component {
         item.bg = require('../images/card/jiaotong_card_bg.png');
         item.money = '10.00';
       }
-      this.setState({dataSource:data});
+      this.setState({ dataSource: data });
       __this.refs.listView.endRefresh();
     }, (err) => {
       __this.refs.listView.endRefresh();
     });
   }
 
+  itemClick(rowData) {
+    Router.pushPage(this, Router.pageNames.CardDetailPage, { data: rowData, title:'交通银行'});
+  }
+
 
   renderCardRow(rowData, sectionID: number, rowID: number) {
     return (
-      <View style={{ flex: 1, width: deviceWidth, height: 155, justifyContent: 'center', alignItems: 'center' }}>
+      <TouchableHighlight activeOpacity={0.6}
+        underlayColor={'transparent'} onPress={() => __this.itemClick(rowData)} key={rowID}>
+        <View style={{ flex: 1, width: deviceWidth, height: 155, justifyContent: 'center', alignItems: 'center' }}>
 
-        <View style={{ width: contentWidth, height: 140 }}>
-          <Image resizeMode='stretch' source={rowData.bg} style={{ position: 'absolute', width: contentWidth, height: 140 }} />
-          <View style={{ marginTop: 50, alignItems: 'center' }}>
-            <Text style={{ backgroundColor: 'transparent', color: 'white', fontSize: 21 }}>{rowData.card}</Text>
-            <ViewLine lineStyle={{ backgroundColor: 'white', width: contentWidth - 40, marginTop: 10, height: 0.4, opacity: 0.4 }} />
+          <View style={{ width: contentWidth, height: 140 }}>
+            <Image resizeMode='stretch' source={rowData.bg} style={{ position: 'absolute', width: contentWidth, height: 140 }} />
+            <View style={{ marginTop: 50, alignItems: 'center' }}>
+              <Text style={{ backgroundColor: 'transparent', color: 'white', fontSize: 21 }}>{rowData.card}</Text>
+              <ViewLine lineStyle={{ backgroundColor: 'white', width: contentWidth - 40, marginTop: 10, height: 0.4, opacity: 0.4 }} />
 
-            <View style={{ flexDirection: 'row', width: contentWidth, marginTop: 10 }}>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>账单日</Text>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.statement_date}</Text>
-              </View>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>还款日</Text>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.repayment_date}</Text>
-              </View>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>还款金额</Text>
-                <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.money}</Text>
+              <View style={{ flexDirection: 'row', width: contentWidth, marginTop: 10 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>账单日</Text>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.statement_date}</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>还款日</Text>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.repayment_date}</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>还款金额</Text>
+                  <Text style={{ backgroundColor: 'transparent', color: 'white' }}>{rowData.money}</Text>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   }
   render() {
