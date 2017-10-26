@@ -29,11 +29,30 @@ export default class InputView extends Component {
 
     constructor(props) {
         super(props);
+        var ao = 0.9;
+        if (this.props.onPress !== undefined) {
+            ao = 0.6;
+        }
         this.state = {
-            isRefreshing: false,
-            isLoadMore: false,
+            activeOpacity: ao,            
         };
+        // this.itemClick.bind(this);
     }
+
+    itemClick() {
+        if (this.props.onPress) {
+            this.props.onPress();
+        }
+    }
+
+    getRightIcon() {
+        if (this.props.onPress === undefined) {
+            return (<View />);
+        }
+        return (<Image source={require('./ItemView/right_icon.png')} style={{ width: 10, height: 15 }} resizeMode='stretch' />
+        );
+    }
+
     render() {
         var width = this.props.contentWidth;
         if (this.props.contentWidth === undefined) {
@@ -43,20 +62,27 @@ export default class InputView extends Component {
         if (this.props.editable !== undefined) {
             isEditable = this.props.editable;
         }
-        return (<View style={{
-            width: width, height: 50, flexDirection: 'row',
-            alignItems: 'center', justifyContent: 'center',
-            backgroundColor: 'transparent', marginLeft: 0,
-        }}>
-            <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>{this.props.label}</Text>
-            <TextField editable={isEditable} style={{ marginLeft: 20, flex: 1 }}
-                placeholder={this.props.placeholder}
-                ref={this.props.refName}
-                onChangeText={(text) => this.props.changeText(text)}
-                
-                defaultValue={this.props.defaultText} />
-            {getCodeInput(this.props.isCode, this.props.mobile, this.props.method)}
-        </View>);
+        return (
+
+            <TouchableHighlight onPress={this.itemClick.bind(this)} style={{}} activeOpacity={this.state.activeOpacity} underlayColor={'transparent'}>
+                <View style={{
+                    width: width, height: 50, flexDirection: 'row',
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: 'transparent', marginLeft: 0,
+                }}>
+
+                    <Text style={{ color: ColorUtil.grayTextColor, fontSize: 16 }}>{this.props.label}</Text>
+                    <TextField editable={isEditable} style={{ marginLeft: 20, flex: 1 }}
+                        placeholder={this.props.placeholder}
+                        ref={this.props.refName}
+                        onChangeText={(text) => this.props.changeText(text)}
+
+                        defaultValue={this.props.defaultText} />
+                    {getCodeInput(this.props.isCode, this.props.mobile, this.props.method)}
+                    {this.getRightIcon()}
+                </View>
+            </TouchableHighlight>
+        );
     }
 }
 const getCodeInput = (isCode, mobile, method) => {

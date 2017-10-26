@@ -19,6 +19,7 @@ import {
 
 import UserData from '../../Data/Interface/UserData'
 import UserInfo from '../../Data/Interface/UserInfo'
+import CardMoneyData from '../../Data/Interface/CardMoneyData'
 import Button from '../../Component/Button'
 import PickerWidget from '../../Component/PickerWidget'
 import ColorUtil from './../../Util/ColorUtil'
@@ -55,11 +56,14 @@ export default class AddCardPage extends Component {
         }
         this.state = {
             userInfo: userInfo.getUserInfo(),
-            nickName: userInfo.getUserInfo().user_nike,
-            sex: userInfo.getUserInfo().user_sex,
             mobile: userInfo.getUserInfo().user_phone,
             userName: userInfo.getUserInfo().user_name,
-            card: userInfo.getUserInfo().user_id_card,
+            card: '',
+            cardName: '',
+            repaymentDay: '',
+            statementDay: '',
+            cvn: '',
+            time: '',
             disabledBtn: false,
             pickDataSource:dayArray,
         }
@@ -67,14 +71,22 @@ export default class AddCardPage extends Component {
     }
 
     pickClick(index){
+        var array = bankName;
         if(index === 0){
             this.setState({pickDataSource:bankName});
         }else{
-            this.setState({pickDataSource:dayArray});
+            array = dayArray;
         }
-        this.refs.pickCardSex.show('bbb'+index, (index,parent) => {
+        this.refs.pickCardSex.show(index, (value, parent) => {
             // this.setState({ selectCard: index });
-        })
+            if(parent === 0){
+                this.setState({cardName: value});
+            }else if(parent === 1){
+                this.setState({statementDay: value});
+            }else{
+                this.setState({repaymentDay: value});
+            }
+        },array)
     }
 
     getContentView() {
@@ -82,13 +94,13 @@ export default class AddCardPage extends Component {
         return (
             <View style={[styles.inputContentView, { marginTop: 20 }]}>
                 <InputView label='姓名' placeholder='请输入姓名' defaultText={this.state.money} changeText={(text) => {
-                    this.setState({ money: text });
+                    this.setState({ userName: text });
                 }} refName="m1" />
                 <ViewLine width={contentWidth + 5} />
 
 
                 <InputView label='身份证' placeholder='请输入身份证号码' defaultText={this.state.recharge} changeText={(text) => {
-                    this.setState({ recharge: text });
+                    this.setState({ idCard: text });
                 }} refName="m2" />
 
                 <ViewLine width={contentWidth + 5} />
@@ -107,23 +119,29 @@ export default class AddCardPage extends Component {
                     this.setState({ time: text });
                 }} refName="m5" />
                 <ViewLine width={contentWidth + 5} />
-                <ItemCellView titleStyle={{color:ColorUtil.grayTextColor,fontSize:16}} width={contentWidth} item={{ title: '发卡银行' }} key={"l1"} onItemClick={(item) => this.pickClick(0)} />
+                <InputView label='发卡银行' placeholder='请选择发卡银行' defaultText={this.state.cardName} changeText={(text) => {
+                    
+                }} refName="m6"  editable = {false} onPress = {()=>this.pickClick(0)}/>
                 <ViewLine width={contentWidth + 5} />
-                <ItemCellView titleStyle={{color:ColorUtil.grayTextColor,fontSize:16}} width={contentWidth} item={{ title: '账单日' }} key={"l2"} onItemClick={(item) => this.pickClick(1)} />
+                <InputView label='账单日' placeholder='' defaultText={this.state.statementDay} changeText={(text) => {
+                    
+                }} refName="m7"  editable = {false} onPress = {()=>this.pickClick(1)}/>
                 <ViewLine width={contentWidth + 5} />
-                <ItemCellView titleStyle={{color:ColorUtil.grayTextColor,fontSize:16}} width={contentWidth} item={{ title: '还款日' }} key={"l3"} onItemClick={(item) => this.pickClick(2)} />
+                <InputView label='还款日' placeholder='' defaultText={this.state.repaymentDay} changeText={(text) => {
+                    
+                }} refName="m8"  editable = {false} onPress = {()=>this.pickClick(2)}/>
                 <ViewLine width={contentWidth + 5} />
 
                 <InputView label='手机号' placeholder='请输入手机号码' defaultText={this.state.mobile} changeText={(text) => {
                     this.setState({ mobile: text });
-                }} refName="m6" />
+                }} refName="m9" />
 
                 <ViewLine width={contentWidth + 5} />
 
                 <InputView label='验证码' placeholder='请输入验证码' defaultText={this.state.mobileCode} changeText={(text) => {
                     this.setState({ mobileCode: text });
                 }} isCode={true} mobile={this.state.mobile}
-                    method={MobileCodeView.getCodeType.recharge} refName="m7" />
+                    method={MobileCodeView.getCodeType.recharge} refName="m10" />
             </View>
         );
     }
@@ -131,13 +149,17 @@ export default class AddCardPage extends Component {
     
 
     saveClick() {
-        this.setState({ disabledBtn: true });
-        UserData.saveInfo(this.state.mobile, this.state.sex, (res) => {
+        
+        var isResult = CardMoneyData.addCredit(this.state.card,this.state.cvn,this.state.time,
+            this.state.statementDay,this.state.repaymentDay,this.state.mobile,(res) => {
             this.setState({ disabledBtn: false });
             this.props.navigation.goBack();
         }, (err) => {
             this.setState({ disabledBtn: false });
         });
+        if(isResult){
+            this.setState({ disabledBtn: true });
+        }
     }
 
     render() {

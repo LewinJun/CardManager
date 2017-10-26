@@ -1,4 +1,4 @@
-import React, { Component,PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -26,26 +26,26 @@ export default class ListViewRefresh extends Component {
   static getListView = (__this) => {
     return __this.refs.refreshListView;
   }
-  
 
-  static defaultProps =  {
-      removeClippedSubviews: false,
-      style: { flex: 1 },
-      dataSource:[],
-      loadingText:'加载中...',
-      renderRow:(rowData, sectionID: number, rowID: number)=> {
-        return (<View/>);
-      }
-    
+
+  static defaultProps = {
+    removeClippedSubviews: false,
+    style: { flex: 1 },
+    dataSource: [],
+    loadingText: '加载中...',
+    renderRow: (rowData, sectionID: number, rowID: number) => {
+      return (<View />);
+    }
+
   }
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       isRefreshing: false,
       isLoadMore: false,
-      dataSource:ds.cloneWithRows(this.props.dataSource),
+      dataSource: ds.cloneWithRows(this.props.dataSource),
     };
   }
 
@@ -54,10 +54,17 @@ export default class ListViewRefresh extends Component {
   // }
 
   endRefresh() {
-    this.setState({ isRefreshing: false,dataSource:ds.cloneWithRows(this.props.dataSource) });
+    this.setState({ isRefreshing: false, dataSource: ds.cloneWithRows(this.props.dataSource) });
   }
   endMore() {
-    this.setState({ isLoadMore: false,dataSource:ds.cloneWithRows(this.props.dataSource) });
+    this.setState({ isLoadMore: false, dataSource: ds.cloneWithRows(this.props.dataSource) });
+  }
+
+  beginRefresh() {
+    this.setState({isRefreshing:true});
+    if (this.props.onRefresh !== undefined) {
+      this.props.onRefresh();
+    }
   }
 
   render() {
@@ -65,23 +72,23 @@ export default class ListViewRefresh extends Component {
       <View>
         <ListView
           ref="refreshListView"
-          style={ this.props.style}
+          style={this.props.style}
           dataSource={this.state.dataSource}
           removeClippedSubviews={this.props.removeClippedSubviews}
           renderRow={this.props.renderRow}
           onEndReached={() => {
-            if(this.props.onMore !== null){
+            if (this.props.onMore !== null) {
               this.setState({ isLoadMore: true });
               if (this.props.onMore !== undefined) {
                 this.props.onMore();
               }
             }
-            
-            
+
+
           }}
           onEndReachedThreshold={10}
           renderFooter={() => {
-            if(this.onMore === null){
+            if (this.onMore === null) {
               return <View />;
             }
             return this.state.isLoadMore ? <Footer /> : <View />;

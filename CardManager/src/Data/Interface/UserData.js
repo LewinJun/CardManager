@@ -13,6 +13,7 @@ import NetworkManager from '../Network/NetworkManager'
 import ToastUtil from '../../Component/ToastUtil'
 import Util from '../../Util/Util'
 import UserInfo from './UserInfo'
+import ApiNames from './DataApiName'
 var userInfoKey = "user_info";
 
 var userInfo = new UserInfo();
@@ -58,13 +59,13 @@ const UserData = {
      * 注册获取验证码
      */
     getMobileCode: (mobile, success, fail) => {
-        UserData.getMobileCodeMethod(mobile, 'register', success, fail);
+        UserData.getMobileCodeMethod(mobile, ApiNames.register, success, fail);
     },
     /**
      * 忘记密码获取验证码
      */
     getMobileCodeForgetPW: (mobile, success, fail) => {
-        UserData.getMobileCodeMethod(mobile, 'forgetPassword', success, fail);
+        UserData.getMobileCodeMethod(mobile, ApiNames.forgetPassword, success, fail);
     },
     /**
      * 登录，mobile:手机号, password:密码

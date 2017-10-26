@@ -33,9 +33,9 @@ class ItemCellView extends Component {
         ;
     } else {
       var views = [];
-      views.push(<Image source={this.props.item.icon} style={{ width: 25, height: 25, marginLeft: 10 }} resizeMode='stretch' />
+      views.push(<Image source={this.props.item.icon} style={{ width: 25, height: 25, marginLeft: 10 }} resizeMode='stretch' key={this.props.item.title+'001'}/>
     );
-    views.push(<Text style={[{ marginLeft: 20, color: '#333435', width: this.props.width - 80 },this.props.titleStyle]}>{this.props.item.title}</Text>
+    views.push(<Text style={[{ marginLeft: 20, color: '#333435', width: this.props.width - 80 },this.props.titleStyle]} key={this.props.item.title+'002'}>{this.props.item.title}</Text>
   );
       return views;
 
