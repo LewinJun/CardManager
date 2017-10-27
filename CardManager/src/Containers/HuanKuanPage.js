@@ -18,7 +18,10 @@ import TabBarItem from '../Component/TabBarItem'
 import ListViewRefresh from '../Component/ListViewRefresh'
 import ViewLine from '../Component/ViewLine'
 import Button from '../Component/Button'
+import UserInfo from '../Data/Interface/UserInfo'
 import Router from '../Util/Router'
+import ColorUtil from '../Util/ColorUtil'
+
 import CardMoneyData from '../Data/Interface/CardMoneyData'
 
 var __this = undefined;
@@ -30,6 +33,8 @@ var contentViewWidth = deviceWidth - 20;
 var contentWidth = contentViewWidth - 30;
 
 var addEvent = undefined;
+var loginEvent = undefined;
+var userInfoManager = new UserInfo();
 
 export default class HuanKuan extends Component {
   static navigationOptions = {
@@ -56,16 +61,24 @@ export default class HuanKuan extends Component {
   }
 
   rightBtnClick() {
-    Router.pushPage(this, Router.pageNames.AddCardPage);
+    if(userInfoManager.isLogin()){
+      Router.pushPage(this, Router.pageNames.AddCardPage);
+    }else{
+      Router.pushPage(this, Router.pageNames.login);
+    }
+    
   }
-
+  //   [
+  //     { card: '****  ****  ****  ****  9999', cardNo: '1238721382', bg: require('../images/card/jiaotong_card_bg.png'), statement_date: '24', repayment_date: '28', money: '0.00' },
+  //     { card: '****  ****  ****  ****  8765', cardNo: '1238721382', bg: require('../images/card/zhaoshang_card_bg.png'), statement_date: '20', repayment_date: '20', money: '1230.00' },],
+  // }
   constructor(props) {
     super(props);
 
     this.state = {
       dataSource: [
-        { card: '****  ****  ****  ****  9999', cardNo: '1238721382', bg: require('../images/card/jiaotong_card_bg.png'), statement_date: '24', repayment_date: '28', money: '0.00' },
-        { card: '****  ****  ****  ****  8765', cardNo: '1238721382', bg: require('../images/card/zhaoshang_card_bg.png'), statement_date: '20', repayment_date: '20', money: '1230.00' },],
+      ],
+      isLogin: userInfoManager.isLogin(),
     };
     __this = this;
   }
@@ -75,6 +88,10 @@ export default class HuanKuan extends Component {
     addEvent = DeviceEventEmitter.addListener(CardMoneyData.CardConfig.DeviceEventEmitterAddSuccess, () => {
       this.refreshData();
     })
+
+    loginEvent = DeviceEventEmitter.addListener(CardMoneyData.CardConfig.DeviceEventEmitterLoginSuccess, () => {
+      this.refreshData();
+    });
   }
 
   componentWillUnmount() {
@@ -82,10 +99,26 @@ export default class HuanKuan extends Component {
     if (addEvent) {
       addEvent.remove();
     }
+    if (loginEvent) {
+      loginEvent.remove();
+    }
 
   }
 
+  getLoginBtn() {
+    return !this.state.isLogin ? <Button title='登录/注册'
+      buttonStyle={{
+        width: 150,
+        height: 50,
+        borderRadius: 2,
+        marginTop: 100,
+      }}  source={require('../images/user/loginReg/blue_style_btn_bg.png')} textStyle={{ color: 'white', fontSize: 18 }}
+      onPress={() => Router.pushPage(this, Router.pageNames.login)} />
+      : <View />;
+  }
+
   refreshData() {
+    this.setState({ isLogin: userInfoManager.isLogin() });
     CardMoneyData.getCreditList((data) => {
 
       for (var i in data) {
@@ -107,8 +140,10 @@ export default class HuanKuan extends Component {
   }
 
   itemClick(rowData) {
-    Router.pushPage(this, Router.pageNames.CardDetailPage, { data: rowData, title:'交通银行'});
+    Router.pushPage(this, Router.pageNames.CardDetailPage, { data: rowData, title: '交通银行' });
   }
+
+
 
 
   renderCardRow(rowData, sectionID: number, rowID: number) {
@@ -143,14 +178,18 @@ export default class HuanKuan extends Component {
       </TouchableHighlight>
     );
   }
+
+
   render() {
     return (
       <View style={styles.container}>
+        {this.getLoginBtn()}
         <ListViewRefresh ref="listView" dataSource={__this.state.dataSource}
           renderRow={__this.renderCardRow}
           onRefresh={() => {
             __this.refreshData();
-          }} onMore={null} style={{ marginTop: 10 }} />
+          }} onMore={null} style={{ marginTop: 10, flex: 1, }} />
+
       </View>
     );
   }

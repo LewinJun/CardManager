@@ -27,7 +27,7 @@ import ViewLine from '../../Component/ViewLine'
 import ToastUtil from '../../Component/ToastUtil'
 import RightIconView from '../../Component/ItemView/RightIconView'
 import CardMoneyData from '../../Data/Interface/CardMoneyData'
-
+import Router from '../../Util/Router'
 
 var Dimensions = require('Dimensions');
 var deviceWidth = Dimensions.get('window').width;
@@ -52,7 +52,7 @@ export default class WithdrawPage extends Component {
         __this = this;
         this.state = {
             nickName: userInfo.getUserInfo().user_nike,
-
+            money: '',
             selectCard: '招商银行(7890)',
             disabledBtn: false,
         }
@@ -63,17 +63,68 @@ export default class WithdrawPage extends Component {
         this.props.navigation.navigate('BookList', { selectType: CardMoneyData.ConsumeDealType.withdraw });
     }
 
-    cardClick() {
-        if (this.refs.pickCardSex) {
-            this.refs.pickCardSex.show('bbb', (index) => {
-                this.setState({ selectCard: index });
-            })
-        }
 
+    componentDidMount() {
+        this.getCardList();
+    }
+
+    getCardList(callBack){
+        this.cardNameList = [];
+        this.cardList = [];
+        CardMoneyData.getCreditList((res)=>{
+            this.cardNameList = [];
+            this.cardList = [];
+
+            this.cardList = res;
+            for(var i in res){
+                var item = res[i];
+                var cardName = item.credit_card_num;
+                if (cardName.length > 4) {
+                  cardName = cardName.substring(cardName.length - 4, cardName.length);
+                }
+                this.cardNameList.push('交通银行  ('+cardName+')');
+            }
+            this.cardInfo = this.cardList[0];
+            this.setState({ selectCard: this.cardNameList[0] });
+            if(callBack){
+                callBack();
+            }
+        },undefined);
+    }
+
+    cardClick(){
+        if(this.cardNameList.length === 0){
+            this.getCardList(()=>{
+               this.showSelectCard()
+            });
+        }else{
+            this.showSelectCard()
+        }
+        
+    }
+
+    showSelectCard(){
+        this.refs.pickCardSex.show(0, (value, parent) => {
+            this.setState({ selectCard: value });
+            for(var i in this.cardNameList){
+                if(this.cardNameList[i] === value){
+                    this.cardInfo = this.cardList[i];
+                }
+            }
+        }, this.cardNameList)
     }
 
     saveClick() {
-
+        var isR = CardMoneyData.recharge(this.cardInfo.credit_card_num,this.state.money,(res)=>{
+            this.setState({disabledBtn:false});
+            
+            Router.goBack(this);
+        },(err)=>{
+            this.setState({disabledBtn:false});
+        });
+        if(isR){
+            this.setState({disabledBtn:true});
+        }
     }
 
     render() {
@@ -89,7 +140,7 @@ export default class WithdrawPage extends Component {
                             <View style={{ marginTop: 15, flexDirection: 'row', width: contentWidth, height: 60 }}>
                                 <Text style={{ textAlign: 'right', width: 60, color: ColorUtil.grayColor, marginTop: 5 }}>信用卡</Text>
                                 <View style={{ marginLeft: 10, marginTop: 4, width: contentWidth - 90 }}>
-                                    <Text style={{ fontSize: 15 }}>招商信用卡  (9999)</Text>
+                                    <Text style={{ fontSize: 15 }}>{this.state.selectCard}</Text>
                                     <Text style={{ color: ColorUtil.grayColor, marginTop:5 }}>银行单笔限额10000元</Text>
                                 </View>
                                 <RightIconView style={{ marginTop: 10 }} />
@@ -100,13 +151,13 @@ export default class WithdrawPage extends Component {
                         <Text style={{ color: ColorUtil.grayColor, fontSize: 14, marginTop: 10 }}>充值金额</Text>
                         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', }}>
                             <Text style={{ fontSize: 28, marginLeft: 75 }}>￥</Text>
-                            <TextField style={{ flex: 1, fontSize: 26 }} />
+                            <TextField style={{ flex: 1, fontSize: 26 }} onChangeText={(text) => this.setState({money:text})}/>
                         </View>
 
                     </View>
                 </View>
 
-                <Button title='两个小时内到账，确认提现' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
+                <Button title='两个小时内到账，确认充值' source={require('../../images/user/loginReg/blue_style_btn_bg.png')}
                     buttonStyle={{ width: deviceWidth - 50, height: 65, marginTop: 10, }} textStyle={{ color: 'white', fontSize: 18 }}
                     onPress={() => this.saveClick()} disabled={this.state.disabledBtn} />
 

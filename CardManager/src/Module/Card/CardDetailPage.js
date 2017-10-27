@@ -67,7 +67,7 @@ export default class CardDetailPage extends Component {
     }
 
     addPlan(){
-        Router.pushPage(this,Router.pageNames.CardPlanPage,{title:this.props.navigation.state.params.title});
+        Router.pushPage(this,Router.pageNames.CardPlanPage,{title:this.props.navigation.state.params.title,data:this.props.navigation.state.params.data});
     }
 
     getCardInfoView() {

@@ -10,10 +10,15 @@ const pushPage = (_this, pageName, param) => {
     if (pageName.indexOf('http') === 0) {
         params.url = pageName;
         _this.props.navigation.navigate('WebViewPage', params);
+    }else if(pageName === pageNames.login){
+        _this.props.navigation.navigate(pageName, { transition: 'forVertical' })
     } else {
         _this.props.navigation.navigate(pageName, params);
     }
     _this.props.commOut = true;
+}
+const goBack = (_this, param) => {
+    _this.props.navigation.goBack();
 }
 
 /**
@@ -37,5 +42,6 @@ const pageNames = {
 
 export default {
     pushPage,
+    goBack,
     pageNames,
 };

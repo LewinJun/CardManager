@@ -96,7 +96,7 @@ const UserData = {
         } else if (Util.isEmpty(mobileCode)) {
             ToastUtil.showError("请输入验证码");
         } else {
-            DataUtil.getWithTip('forgetPassword', { 'user_phone': mobile, 'user_password': password, 'verification_code': mobileCode }, success, fail);
+            DataUtil.postWithTip('forgetPassword', { 'user_phone': mobile, 'user_password': password, 'verification_code': mobileCode }, success, fail);
         }
     },
     saveInfo: (nickName, sex, success, fail) => {
@@ -162,6 +162,7 @@ const UserData = {
      * 退出登录
      */
     loginOut: () => {
+        AsyncStorage.setItem(userInfoKey, '');
         userInfo.setUserInfo({});
     },
     /**

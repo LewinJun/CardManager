@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ListView,
   Animated,
-  RefreshControl,
+  DeviceEventEmitter,
   TouchableHighlight,
   Image,
   Text,
@@ -30,7 +30,11 @@ import Button from '../Component/Button'
 import Footer from '../Component/Footer'
 import ColorUtil from '../Util/ColorUtil'
 import Util from '../Util/Util'
+import ListViewRefresh from '../Component/ListViewRefresh'
 import CardMoneyData from '../Data/Interface/CardMoneyData'
+import UserInfo from '../Data/Interface/UserInfo'
+import Router from '../Util/Router'
+
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -39,6 +43,11 @@ var dataSourceArrayInit = [
 ];
 var dataSourceArray = dataSourceArrayInit.concat();
 var _this = undefined;
+
+var userInfoManager = new UserInfo();
+
+var loginEvent = undefined;
+
 export default class AccountBookPage extends Component {
 
 
@@ -89,14 +98,17 @@ export default class AccountBookPage extends Component {
       }
     }
 
+    this.menuItemSelectIndex = selectType;
+
     this.state = {
-      dataSource: ds.cloneWithRows(dataSourceArray),
+      dataSource: [],
       menuDataSource: ds.cloneWithRows(menuViewDataArray),
       menuDataSourceList: menuViewDataArray,
       menuViewHeight: new Animated.Value(0),
       menuItemSelectIndex: selectType,
       isRefreshing: false,
       isLoadMore: false,
+      isLogin: userInfoManager.isLogin(),
     };
 
   }
@@ -124,12 +136,12 @@ export default class AccountBookPage extends Component {
         <View style={{ width: contentWidth, height: 70, flexDirection: 'row', alignItems: 'center' }}>
           <Image source={require('../images/book/kuaisu_huankuan_icon.png')} style={{ width: contentItemImgSize, height: contentItemImgSize }} />
           <View style={{ marginLeft: 10, width: contentTitleWidth }}>
-            <Text style={{ width: contentTitleWidth }}>快速还款 ￥430.23</Text>
-            <Text style={{ width: contentTitleWidth, marginTop: 4 }}>2016-09-10 12:56</Text>
+            <Text style={{ width: contentTitleWidth }}>{rowData.title}</Text>
+            <Text style={{ width: contentTitleWidth, marginTop: 4 }}>{rowData.time}</Text>
           </View>
           <View style={{ alignSelf: 'flex-end', justifyContent: 'center', height: 70, width: contentTitleWidth }}>
-            <Text style={{ textAlign: 'right', marginRight: 10, width: contentTitleWidth - 10 }}>快速还款 ￥430.23</Text>
-            <Text style={{ marginTop: 4, textAlign: 'right', marginRight: 10, width: contentTitleWidth - 10 }}>2016-09-10 12:56</Text>
+            <Text style={{ textAlign: 'right', marginRight: 10, width: contentTitleWidth - 10 }}>{rowData.cardName}</Text>
+            <Text style={{ marginTop: 4, textAlign: 'right', marginRight: 10, width: contentTitleWidth - 10 }}>{rowData.result}</Text>
           </View>
         </View>
 
@@ -140,17 +152,87 @@ export default class AccountBookPage extends Component {
   menuItemClick(rowID) {
     var array = this.state.menuDataSourceList;
     var selectType = CardMoneyData.ConsumeDealType.all;
+    selectType = array[parseInt(rowID)].type;
     for (var i = 0; i < array.length; i++) {
       array[i].isSelect = false;
       if (rowID === i + '') {
         array[i].isSelect = true;
-        selectType = array[i].type;
+        
       }
     }
     console.log('rowID:' + rowID);
     //刷新menuView ListView
+    this.menuItemSelectIndex = selectType;
     this.setState({ menuDataSource: ds.cloneWithRows(array), menuDataSourceList: array, menuItemSelectIndex: selectType });
     this.rightBtnClick();
+    _this.refs.listView.beginRefresh();
+  }
+
+  refreshData() {
+    this.setState({ isLogin: userInfoManager.isLogin() });
+    CardMoneyData.getOrderList(this.menuItemSelectIndex, (res) => {
+      var array = res.data;
+      for(var i in array){
+        array[i].time = Util.formatDate(array[i].create_time,'yyyy-MM-dd hh:mm');
+        if(array[i].trade_money){
+          array[i].title = CardMoneyData.ConsumeData[array[i].type].title+"  ￥"+array[i].trade_money;
+        }else{
+          array[i].title = CardMoneyData.ConsumeData[array[i].type].title;
+        }
+        array[i].img = CardMoneyData.ConsumeData[array[i].type].img;
+        if(!array[i].img){
+          array[i].img = '../images/book/chun_xiaofei_icon.png';
+        }
+        //成功
+        array[i].result = '成功';
+        if(array[i].state !== 0){
+          array[i].result = '失败';
+        }
+        var cardName = array[i].credit_card_num;
+        if (cardName && cardName.length > 4) {
+          cardName = cardName.substring(cardName.length - 4, cardName.length);
+        }
+
+        //尾号
+        array[i].cardName = '';
+        if(cardName){
+          array[i].cardName = '尾号('+cardName+')';
+        }
+
+        
+      }
+      this.setState({ dataSource: res.data });
+      _this.refs.listView.endRefresh();
+    }, (err) => {
+      _this.refs.listView.endRefresh();
+    });
+  }
+
+  getLoginBtn() {
+    return !this.state.isLogin ? <Button title='登录/注册'
+      buttonStyle={{
+        width: 150,
+        height: 50,
+        borderRadius: 2,
+        marginTop: 100,
+      }}  source={require('../images/user/loginReg/blue_style_btn_bg.png')} textStyle={{ color: 'white', fontSize: 18 }}
+      onPress={() => Router.pushPage(this, Router.pageNames.login)} />
+      : <View />;
+  }
+
+  componentDidMount() {
+    _this.refs.listView.beginRefresh();
+    loginEvent = DeviceEventEmitter.addListener(CardMoneyData.CardConfig.DeviceEventEmitterLoginSuccess, () => {
+      this.refreshData();
+    });
+  }
+
+  componentWillUnmount() {
+    //移除
+    if (loginEvent) {
+      loginEvent.remove();
+    }
+
   }
 
   _renderMenuRow(text, sectionID: number, rowID: number) {
@@ -189,46 +271,13 @@ export default class AccountBookPage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ListView
-          style={styles.listView}
-          dataSource={this.state.dataSource}
-          removeClippedSubviews={false}
-          renderRow={this._renderRow}
-          onEndReached={() => {
-            this.setState({ isLoadMore: true });
-            setTimeout(() => {
-              this.setState({ isLoadMore: false });
-              dataSourceArray.push('aaa');
-              dataSourceArray.push('aaa');
-              dataSourceArray.push('aaa');
-              dataSourceArray.push('aaa');
-              dataSourceArray.push('aaa');
-              this.setState({ dataSource: ds.cloneWithRows(dataSourceArray) });
-              {/* Alert.alert(
-                                'Alert Title',
-                                'cccc',
-                            ) */}
-            }, 3000);
-          }}
-          onEndReachedThreshold={10}
-          renderFooter={() => {
-            return this.state.isLoadMore ? <Footer /> : <View />;
-          }}
-          refreshControl={
-            <RefreshControl
-              style={{ backgroundColor: 'transparent' }}
-              refreshing={this.state.isRefreshing}
-              onRefresh={() => {
-                this.setState({ isRefreshing: true });
-                setTimeout(() => {
-                  this.setState({ dataSource: ds.cloneWithRows(dataSourceArrayInit), isRefreshing: false });
-                }, 3000);
-              }}
-              title="Loading..."
-              colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
-            />
-          }
-        />
+      {this.getLoginBtn()}
+        <ListViewRefresh ref="listView" dataSource={_this.state.dataSource}
+          renderRow={_this._renderRow}
+          onRefresh={() => {
+            _this.refreshData();
+          }} onMore={null} style={{ marginTop: 10, flex: 1, }} />
+
         {this.getMenuView()}
       </View>
     );

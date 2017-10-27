@@ -33,6 +33,8 @@ var userInfo = new UserInfo();
 
 var __this = undefined;
 
+var detailInfo = {};
+
 /**
  * 提现
  */
@@ -43,6 +45,7 @@ export default class NoticeDetailPage extends Component {
     }
     constructor(props) {
         super(props);
+        detailInfo = this.props.navigation.state.params.data;
         this.state = {
         };
         __this = this;
@@ -62,13 +65,13 @@ export default class NoticeDetailPage extends Component {
                     <View style={[{ width: contentViewWidth, alignItems: 'center', justifyContent: 'center',marginTop:20 }, CommonStyle.styles.viewBorder]}>
                         <View style={{ width: contentWidth, justifyContent: 'center', }}>
                             <View style={{ height: 41, width: contentWidth, justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 18, color: '#3b3c3c', fontWeight: 'bold' }}>光宇啊啊发货及时的</Text>
+                                <Text style={{ fontSize: 18, color: '#3b3c3c', fontWeight: 'bold' }}>{detailInfo.title}</Text>
                             </View>
                             <View style={{  justifyContent: 'center',  height: 25 }}>
-                                <Text style={{ width: contentWidth - 70, color: ColorUtil.grayColor }}>2017/09/11</Text>
+                                <Text style={{ width: contentWidth - 70, color: ColorUtil.grayColor }}>{Util.formatDate(detailInfo.update_time,'yyyy/MM/dd')}</Text>
                             </View>
                             <View style={{ marginTop: 20, justifyContent: 'center', width: contentWidth }}>
-                                <Text style={{ fontSize: 15, color: '#363838', width: contentWidth }}>光宇啊啊发货及时的</Text>
+                                <Text style={{ fontSize: 15, color: '#363838', width: contentWidth }}>{detailInfo.content}</Text>
                                 <View style={{height:25,backgroundColor: 'transparent'}}/>
                             </View>
                             

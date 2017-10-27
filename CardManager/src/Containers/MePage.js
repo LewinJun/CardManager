@@ -91,12 +91,12 @@ export default class MePage extends Component {
       isSetUserName: true,
     }
 
-    if(deviceHeight < 667){
+    if (deviceHeight < 667) {
       topViewHeight = 200;
       topUserTop = 40;
       topMenuHeight = 44;
     }
-    
+
   }
 
   /**
@@ -115,7 +115,7 @@ export default class MePage extends Component {
       }
 
     }
-    this.setState({ userInfo: info,isLogin: userInfoManager.isLogin(), });
+    this.setState({ userInfo: info, isLogin: userInfoManager.isLogin(), });
   }
 
   componentDidMount() {
@@ -149,8 +149,8 @@ export default class MePage extends Component {
     );
   }
 
-  getUserInfoView() {    
-    var userNameStyle = this.state.isSetUserName ? {color: 'white'} : {color: ColorUtil.grayColor} 
+  getUserInfoView() {
+    var userNameStyle = this.state.isSetUserName ? { color: 'white' } : { color: ColorUtil.grayColor }
     if (this.state.isLogin) {
       return (
         <View>
@@ -168,11 +168,11 @@ export default class MePage extends Component {
             shadowColor: ColorUtil.grayColor, shadowOffset: { width: 5, height: 5 },
             shadowOpacity: 0.6, shadowRadius: 6, elevation: 5
           }}>
-            {this.getTopMenuItemView('提现',()=>{
+            {this.getTopMenuItemView('提现', () => {
               this.props.navigation.navigate('WithdrawPage');
             })}
             <View style={{ backgroundColor: 'white', width: 1, height: 25 }} />
-            {this.getTopMenuItemView('充值',()=>{
+            {this.getTopMenuItemView('充值', () => {
               this.props.navigation.navigate('Recharge');
             })}
           </View>
@@ -190,7 +190,7 @@ export default class MePage extends Component {
   /**
    * 提现和充值item
    */
-  getTopMenuItemView(text,click) {
+  getTopMenuItemView(text, click) {
     return (
       <TouchableHighlight style={{ flex: 1, height: 54 }} activeOpacity={0.6}
         underlayColor={'transparent'} onPress={() => click()}>
@@ -216,22 +216,26 @@ export default class MePage extends Component {
     var datas = data.data;
 
     return (
-      <ListItemView data = {datas} onItemClick={(item)=>_this.itemClick(item)}/>
+      <ListItemView data={datas} onItemClick={(item) => _this.itemClick(item)} />
     );
   }
 
   itemClick(item) {
+    if (item && (item.id !== '5' && item.id !== '6' && item.id !== '3') && !userInfoManager.isLogin()) {
+      Router.pushPage(this, Router.pageNames.login);
+      return;
+    }
     if (item && item.id === '7') {
       Alert.alert('温馨提醒', '确定退出吗?', [
         { text: '取消', onPress: () => console.log() },
         { text: '确定', onPress: () => this.loginOut() }
       ])
-    }else if(item.id === '0'){
+    } else if (item.id === '0') {
       this.props.navigation.navigate('UserInfo');
-    }else if(item.id === '1'){
+    } else if (item.id === '1') {
       this.props.navigation.navigate('UpdatePassword');
-    }else if(item.id === '3'){
-      Router.pushPage(this,Router.pageNames.NoticePage);
+    } else if (item.id === '3') {
+      Router.pushPage(this, Router.pageNames.NoticePage);
     }
 
   }

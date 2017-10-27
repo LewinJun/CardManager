@@ -44,15 +44,32 @@ export default class NoticePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: ['', '', '', '', '',],
+            dataSource: [],
         };
         __this = this;
     }
 
     _renderRow(rowData, sectionID: number, rowID: number) {
         return (<NoticeItem rowID={rowID} item={rowData} onPress={(rowID, item) => {
-            Router.pushPage(__this,Router.pageNames.NoticeDetailPage);
+            Router.pushPage(__this, Router.pageNames.NoticeDetailPage,{data:rowData});
         }} />);
+    }
+
+    componentDidMount() {
+        __this.refs.listView.beginRefresh();
+    }
+
+    refresData() {
+        UserData.getConfig((res) => { 
+            var datas = [];
+            if(res.noticeList){
+                datas = res.noticeList;
+            }
+            this.setState({dataSource:datas});
+            __this.refs.listView.endRefresh();
+        }, (err) => {
+          __this.refs.listView.endRefresh();
+        });
     }
 
     render() {
@@ -61,21 +78,8 @@ export default class NoticePage extends Component {
                 <ListViewRefresh ref="listView" dataSource={__this.state.dataSource}
                     renderRow={__this._renderRow}
                     onRefresh={() => {
-                        setTimeout(() => {
-                            __this.refs.listView.endRefresh();
-                        }, 3000);
-                    }} onMore={() => {
-
-                        setTimeout(() => {
-                            var arr = this.state.dataSource;
-                            arr.push('');
-                            arr.push('');
-                            arr.push('');
-                            arr.push('');
-                            __this.setState({ dataSource: arr });
-                            __this.refs.listView.endMore();
-                        }, 3000);
-                    }} style={{marginTop:10}} />
+                        this.refresData();
+                    }} onMore={null} style={{ marginTop: 10 }} />
             </View>
         );
     }
@@ -104,14 +108,14 @@ class NoticeItem extends Component {
                     <View style={[{ width: contentViewWidth, height: 150, alignItems: 'center', justifyContent: 'center' }, CommonStyle.styles.viewBorder]}>
                         <View style={{ width: contentWidth, justifyContent: 'center', height: 140 }}>
                             <View style={{ height: 41, width: contentWidth, justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 18 ,color:'#3b3c3c',fontWeight:'bold'}}>光宇啊啊发货及时的</Text>
+                                <Text style={{ fontSize: 18, color: '#3b3c3c', fontWeight: 'bold' }}>{this.props.item.title}</Text>
                             </View>
                             <View style={{ height: 59, justifyContent: 'center', width: contentWidth }}>
-                                <Text style={{ fontSize: 15, color: '#363838' }}>光宇啊啊发货及时的</Text>
+                                <Text style={{ fontSize: 15, color: '#363838' }}>{this.props.item.content}</Text>
                             </View>
                             <ViewLine width={contentWidth} />
                             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, height: 40 }}>
-                                <Text style={{ width: contentWidth - 70, color: ColorUtil.grayColor }}>2017/09/11</Text>
+                                <Text style={{ width: contentWidth - 70, color: ColorUtil.grayColor }}>{Util.formatDate(this.props.item.update_time,'yyyy/MM/dd')}</Text>
                                 <Text style={{ color: ColorUtil.styleColor }}>详情查看</Text>
                                 <Image source={require('../../images/list_right.png')} style={{ marginLeft: 4, width: 10, height: 15 }} resizeMode='stretch' />
                             </View>

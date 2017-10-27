@@ -110,16 +110,12 @@ export default class ForgetPassWordPage extends Component {
 
     reSetPassword() {
         var isCan = UserData.reSetPassword(this.state.mobile, this.state.password, this.state.mobileCode, (res) => {
-            ToastUtil.dismiss();
-            ToastUtil.showShort(res.message);
             this.setState({ okBtnDisable: false });
         }, (error) => {
-            ToastUtil.dismiss();
-            ToastUtil.showShort(error.message);
+            
             this.setState({ okBtnDisable: false });
         });
         if (isCan) {
-            ToastUtil.showLoading();
             this.setState({ okBtnDisable: true });
         }
     }

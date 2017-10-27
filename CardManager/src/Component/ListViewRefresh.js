@@ -73,6 +73,7 @@ export default class ListViewRefresh extends Component {
         <ListView
           ref="refreshListView"
           style={this.props.style}
+          enableEmptySections = {true}
           dataSource={this.state.dataSource}
           removeClippedSubviews={this.props.removeClippedSubviews}
           renderRow={this.props.renderRow}
