@@ -24,6 +24,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5, 
         borderBottomColor: '#b5b6b7', 
         elevation: 3, 
+    },
+    viewBottomTop:{
+        shadowColor: '#b5b6b7', 
+        shadowOffset: { width: 5, height: -5 }, 
+        shadowOpacity: 0.4, shadowRadius: 6,
+        borderTopWidth: 0.5, 
+        borderTopColor: '#EBEBEB', 
+        elevation: 3, 
     }
 });
 

@@ -33,7 +33,7 @@ import NoticeDetailPage from './Module/User/NoticeDetailPage'
 //信用卡模块
 import AddCardPage from './Module/Card/AddCardPage'
 import CardDetailPage from './Module/Card/CardDetailPage'
-
+import CardPlanPage from './Module/Card/CardPlanPage'
 
 import ColorUtil from './Util/ColorUtil'
 
@@ -97,7 +97,8 @@ const App = StackNavigator(
     NoticePage: { screen: NoticePage },
     NoticeDetailPage: { screen: NoticeDetailPage },
     AddCardPage: { screen: AddCardPage },
-    CardDetailPage:{screen:CardDetailPage},
+    CardDetailPage: { screen: CardDetailPage },
+    CardPlanPage: { screen: CardPlanPage },
   },
   {
     headerMode: 'screen',

@@ -34,10 +34,15 @@ const fetchRequest = function (url, params, method, header) {
             }
         }else{
             let formData = new FormData();
+            var isForm = false;
             for(var key in params){
+                isForm = true;
                 formData.append(key,params[key]);
             }
-            requestParam.body = formData;
+            if(isForm){
+                requestParam.body = formData;
+            }
+            
         }
         
     }
